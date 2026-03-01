@@ -94,7 +94,7 @@ export default function Fields({ onSubmitLocations }: FieldsProps) {
             name="hotel"
             value={form.hotel}
             onChange={handleChange}
-            placeholder="Hotel name or address"
+            placeholder="Hotel name-- include address!"
             className={inputClass}
           />
         </div>

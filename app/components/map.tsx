@@ -17,15 +17,16 @@ export default function ExMap({ locations }: ExMapProps) {
   const [apiKey, setApiKey] = useState<string | null>(null);
 
   useEffect(() => {
+    showMap(true); 
     fetch("/api/maps-key")
       .then((res) => res.json())
-      .then((data) => setApiKey(data.apiKey));
+      .then((data) => setApiKey(data.apiKey)); 
   }, []);
 
   return (
     <div style={{ width: "40vw", 
-    height: "600px", 
-    opacity: mapVisible ? 1 : 0, 
+    height: "690px", 
+    opacity: mapVisible ? 0 : 1, 
     transition: "opacity 1s ease", 
     pointerEvents: mapVisible ? "auto" : "none", 
     marginLeft: "40px", 
@@ -33,7 +34,7 @@ export default function ExMap({ locations }: ExMapProps) {
   } 
     className = "h-fit w-[48vw] rounded-2xl border border-gray-100 bg-white p-7 shadow-sm" >
       {apiKey && (
-        <APIProvider apiKey={apiKey} onLoad={() => showMap(true)}>
+        <APIProvider apiKey={apiKey}>
           <Map
             style={{ width: "100%", height: "100%" }}
             defaultCenter={{ lat: 42.36, lng: -71.09 }}
