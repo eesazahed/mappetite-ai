@@ -61,8 +61,9 @@ export default function Header({ scrollContainer }: HeaderProps) {
     <div className="relative h-lvh w-full bg-(--color-brand-900)">
       <div className="absolute top-0 left-0 flex h-full w-full flex-col items-center justify-center">
         <div
-          className={`flex flex-col items-center justify-center transition-transform duration-700 ${animationDone ? "-translate-y-16" : "translate-y-0"
-            }`}
+          className={`flex flex-col items-center justify-center transition-transform duration-700 ${
+            animationDone ? "-translate-y-16" : "translate-y-0"
+          }`}
         >
           <h1 className="text-center text-8xl leading-[1.2] text-gray-300">
             <span
@@ -72,8 +73,9 @@ export default function Header({ scrollContainer }: HeaderProps) {
               <span>{displayed}</span>
               {showCursor && (
                 <span
-                  className={`animate-fade ml-1 h-[1em] w-0.75 bg-gray-300 transition-opacity duration-500 ${cursorFade ? "opacity-0" : "opacity-100"
-                    }`}
+                  className={`animate-fade ml-1 h-[1em] w-0.75 bg-gray-300 transition-opacity duration-500 ${
+                    cursorFade ? "opacity-0" : "opacity-100"
+                  }`}
                 ></span>
               )}
             </span>
@@ -88,16 +90,18 @@ export default function Header({ scrollContainer }: HeaderProps) {
           {images.map((src, i) => (
             <div
               key={i}
-              className={`overflow-hidden transition-all duration-700 ${visibleImages.includes(i) ? "h-32" : "h-0"
-                }`}
+              className={`overflow-hidden transition-all duration-700 ${
+                visibleImages.includes(i) ? "h-32" : "h-0"
+              }`}
             >
               <Image
                 src={src}
                 alt={`Image ${i}`}
                 width={1}
                 height={1}
-                className={`h-32 w-32 rounded-lg object-cover transition-opacity duration-700 ${visibleImages.includes(i) ? "opacity-100" : "opacity-0"
-                  }`}
+                className={`h-32 w-32 rounded-lg object-cover transition-opacity duration-700 ${
+                  visibleImages.includes(i) ? "opacity-100" : "opacity-0"
+                }`}
               />
             </div>
           ))}
@@ -107,8 +111,9 @@ export default function Header({ scrollContainer }: HeaderProps) {
       <div className="absolute bottom-6 left-1/2 -translate-x-1/2">
         <FaArrowDown
           size="2rem"
-          className={`animate-bounce text-gray-300 transition-opacity duration-300 ${arrowVisible ? "opacity-100" : "opacity-0"
-            }`}
+          className={`animate-bounce text-gray-300 transition-opacity duration-300 ${
+            arrowVisible ? "opacity-100" : "opacity-0"
+          }`}
         />
       </div>
 

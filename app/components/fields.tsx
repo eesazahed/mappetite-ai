@@ -132,37 +132,71 @@ export default function Fields() {
           />
         </div>
 
-                <div className="flex flex-col gap-1">
-                    <label className={labelClass} style={{ fontWeight: 600 }}>Preferred Cuisine</label>
-                    <input type="text" name="cuisine" value={form.cuisine} onChange={handleChange} placeholder="Italian, Thai, etc." className={inputClass} />
-                </div>
-                <div className="flex items-center gap-2.5">
-                    <button
-                        type="button"
-                        onClick={() => setForm((prev) => ({ ...prev, includeFastFood: !prev.includeFastFood }))}
-                        className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition flex-shrink-0 ${form.includeFastFood ? "bg-brand-500 border-brand-500" : "bg-white border-gray-300 hover:border-brand-300"
-                            }`}
-                    >
-                        {form.includeFastFood && (
-                            <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
-                                <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                            </svg>
-                        )}
-                    </button>
-                    <span className="text-sm text-gray-600">Include fast food</span>
-                </div>
-                <div className="flex flex-col gap-1">
-                    <label className={labelClass} style={{ fontWeight: 600 }}>Meals per Day</label>
-                    <input type="number" name="mealsPerDay" value={form.mealsPerDay} onChange={handleChange} placeholder="1 to 5" min={1} max={5} className={inputClass} />
-                </div>
-                <button
-                    type="submit"
-                    className="mt-1 w-full py-2.5 rounded-xl bg-brand-700 text-white text-sm tracking-wide shadow-sm hover:bg-brand-900 active:scale-[0.98] transition-all"
-                    style={{ fontWeight: 600 }}
-                >
-                    Plan meals
-                </button>
-            </form>
+        <div className="flex flex-col gap-1">
+          <label className={labelClass} style={{ fontWeight: 600 }}>
+            Preferred Cuisine
+          </label>
+          <input
+            type="text"
+            name="cuisine"
+            value={form.cuisine}
+            onChange={handleChange}
+            placeholder="Italian, Thai, etc."
+            className={inputClass}
+          />
         </div>
-    );
+        <div className="flex items-center gap-2.5">
+          <button
+            type="button"
+            onClick={() =>
+              setForm((prev) => ({
+                ...prev,
+                includeFastFood: !prev.includeFastFood,
+              }))
+            }
+            className={`flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-md border-2 transition ${
+              form.includeFastFood
+                ? "bg-brand-500 border-brand-500"
+                : "hover:border-brand-300 border-gray-300 bg-white"
+            }`}
+          >
+            {form.includeFastFood && (
+              <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+                <path
+                  d="M1 4L3.5 6.5L9 1"
+                  stroke="white"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            )}
+          </button>
+          <span className="text-sm text-gray-600">Include fast food</span>
+        </div>
+        <div className="flex flex-col gap-1">
+          <label className={labelClass} style={{ fontWeight: 600 }}>
+            Meals per Day
+          </label>
+          <input
+            type="number"
+            name="mealsPerDay"
+            value={form.mealsPerDay}
+            onChange={handleChange}
+            placeholder="1 to 5"
+            min={1}
+            max={5}
+            className={inputClass}
+          />
+        </div>
+        <button
+          type="submit"
+          className="bg-brand-700 hover:bg-brand-900 mt-1 w-full rounded-xl py-2.5 text-sm tracking-wide text-white shadow-sm transition-all active:scale-[0.98]"
+          style={{ fontWeight: 600 }}
+        >
+          Plan meals
+        </button>
+      </form>
+    </div>
+  );
 }
