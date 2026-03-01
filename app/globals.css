@@ -3,11 +3,11 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
-  --brand-900: #26532B;
-  --brand-700: #399E5A;
-  --brand-500: #5ABCB9;
-  --brand-300: #63E2C6;
-  --brand-100: #6EF9F5;
+  --brand-900: #26532b;
+  --brand-700: #399e5a;
+  --brand-500: #5abcb9;
+  --brand-300: #63e2c6;
+  --brand-100: #6ef9f5;
 }
 
 @theme inline {

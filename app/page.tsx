@@ -1,16 +1,16 @@
 import Header from "./components/header";
 import Map from "./components/map";
-import FoodInfo from "./components/foodInfo";
+import Fields from "./components/fields";
 
 export default function Home() {
   return (
-    <>
+    <div className="h-screen overflow-x-hidden overflow-y-auto overscroll-none">
       <Header />
-      <div className="grid grid-cols-[auto_1fr] min-h-screen bg-gray-400 font-sans dark:bg-gray-400 p-4">
-        {/* change colors above */}
-        <FoodInfo />
+
+      <div className="grid h-screen grid-cols-[auto_1fr] bg-(--color-brand-700) p-6 font-sans">
+        <Fields />
         <Map />
       </div>
-    </>
+    </div>
   );
 }
