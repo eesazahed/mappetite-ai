@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { RiArrowDropDownLine } from "react-icons/ri";
 
 export default function Fields() {
   const [form, setForm] = useState({
@@ -99,7 +99,7 @@ export default function Fields() {
               <option value="public_transit">Public transit</option>
               <option value="bike">Bike</option>
             </select>
-            <ChevronDown
+            <RiArrowDropDownLine
               size={15}
               className="pointer-events-none absolute top-1/2 right-3.5 -translate-y-1/2 text-gray-500"
             />
