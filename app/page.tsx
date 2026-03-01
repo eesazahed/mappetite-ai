@@ -4,10 +4,10 @@ import Fields from "./components/fields";
 
 export default function Home() {
   return (
-    <div className="h-screen overflow-y-auto overscroll-none overflow-x-hidden">
+    <div className="h-screen overflow-x-hidden overflow-y-auto overscroll-none">
       <Header />
 
-      <div className="grid grid-cols-[auto_1fr] bg-(--color-brand-700) font-sans h-screen p-6">
+      <div className="grid h-screen grid-cols-[auto_1fr] bg-(--color-brand-700) p-6 font-sans">
         <Fields />
         <Map />
       </div>

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
-import localFont from 'next/font/local';
+import localFont from "next/font/local";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -16,7 +16,7 @@ const GCMilan = localFont({
     },
   ],
   variable: "--font-gc-milan",
-  display: "swap"
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -31,7 +31,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${GCMilan.className} antialiased`}>{children}</body>
+      <body
+        className={`${geistSans.variable} ${GCMilan.className} antialiased`}
+      >
+        {children}
+      </body>
     </html>
   );
 }
