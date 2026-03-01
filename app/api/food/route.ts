@@ -46,10 +46,11 @@ function filterByBudget(
   mealsPerDay: number,
 ) {
   const maxPerMeal = budgetPerDay / mealsPerDay;
-  const [minLevel, maxLevel] = priceLevelFromBudget(maxPerMeal);
+  const [, maxLevel] = priceLevelFromBudget(maxPerMeal);
 
+  // Include restaurants with no price_level (data missing) — don't penalise for incomplete data
   return restaurants.filter(
-    (r) => r.price_level != null && r.price_level <= maxLevel,
+    (r) => r.price_level == null || r.price_level <= maxLevel,
   );
 }
 
@@ -113,9 +114,10 @@ export async function POST(request: Request) {
     );
 
     if (budgetFiltered.length < days * mealsPerDay) {
-      return NextResponse.json({
-        error: "Not enough restaurants within budget and distance",
-      });
+      return NextResponse.json(
+        { error: "Not enough restaurants found within your budget and distance. Try increasing the distance or budget." },
+        { status: 422 },
+      );
     }
 
     const schedule = buildSchedule(budgetFiltered, days, mealsPerDay);
