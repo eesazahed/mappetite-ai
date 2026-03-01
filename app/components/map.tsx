@@ -1,20 +1,40 @@
 "use client";
 
 import { APIProvider, Map } from "@vis.gl/react-google-maps";
+import { useState } from "react";
+
+const apiCode = process.env.GMAP_API_KEY! // for some reason a !
+
+console.log(apiCode)
 
 export default function ExMap() {
+
+  const Lat = 42.36
+  const Lng = -71.09
+
+  const [mapVisible, showMap] = useState(false)
+
   return (
-    <div className="bg-gray p-4 w-full h-full">
+    <div className="bg-gray p-4 w-full h-full" 
+
+        style={{
+          opacity: mapVisible ? 1 : 0,
+          transition: "opacity 1s ease",
+          pointerEvents: mapVisible ? "auto" : "none"
+        }}>
+
         <APIProvider
-          apiKey={"AIzaSyAAfXxrhCn1VPkH0-HjeTtQIxdle296ux0"}
-          onLoad={() => console.log("Maps API has loaded.")}
+          apiKey= {process.env.GMAP_API_KEY!}
+          onLoad={() => 
+            showMap(true)
+          }
         >
           <Map
             className="w-full h-full"
-            defaultCenter={{ lat: 22.54992, lng: 0 }}
-            defaultZoom={3}
+            defaultCenter={{ lat: Lat, lng: Lng }}
+            defaultZoom={18}
             gestureHandling="greedy"
-            disableDefaultUI
+            
           ></Map>
         </APIProvider>
     </div>
