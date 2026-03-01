@@ -27,9 +27,36 @@ export default function Fields() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form submitted", form);
+
+    try {
+      const res = await fetch("/api/food", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          city: form.city,
+          hotelName: form.hotel,
+          days: Number(form.tripDuration),
+          mealsPerDay: Number(form.mealsPerDay),
+          likes: form.cuisine.split(",").map((c) => c.trim()),
+          budgetPerDay: Number(form.budget),
+          maxDistanceKm: Number(form.maxDistance),
+        }),
+      });
+
+      const result = await res.json();
+
+      if (res.ok) {
+        console.log("Success:", result);
+      } else {
+        console.error("Error:", result.error);
+        alert(result.error);
+      }
+    } catch (err) {
+      console.error("Network error:", err);
+      alert("Network error. Please try again.");
+    }
   };
 
   const labelClass = "text-xs text-gray-500 uppercase tracking-wider";
