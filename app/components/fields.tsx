@@ -2,11 +2,22 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useMapsLibrary } from "@vis.gl/react-google-maps";
-import { RiArrowDropDownLine } from "react-icons/ri";
+
+type AttractionPlace = { lat: number; lng: number; name: string; address: string };
+
+type DaySchedule = {
+  day: number;
+  meals: any[];
+  orderedWaypoints: { lat: number; lng: number; name: string; stopType: "meal" | "attraction" }[];
+};
 
 type FieldsProps = {
   onSubmitLocations: (locations: any[]) => void;
-  onSetHotelCoords: (coords: { lat: number; lng: number } | null) => void;
+  onSetHotelCoords: (coords: { lat: number; lng: number; name: string } | null) => void;
+  onSetAttractions: (attractions: AttractionPlace[]) => void;
+  onSetDaySchedules: (schedules: DaySchedule[]) => void;
+  onError: (message: string) => void;
+  onLoadingChange: (loading: boolean) => void;
 };
 
 type HotelPlace = {
@@ -16,13 +27,72 @@ type HotelPlace = {
   address: string;
 };
 
+function AttractionInput({
+  placesLib,
+  onSelect,
+  onRemove,
+}: {
+  placesLib: google.maps.PlacesLibrary | null;
+  onSelect: (p: AttractionPlace | null) => void;
+  onRemove: () => void;
+}) {
+  const ref = useRef<HTMLInputElement>(null);
+  const inputClass =
+    "w-full rounded-lg px-3 py-2.5 text-sm text-white placeholder:text-white/25 focus:ring-1 focus:ring-[#5abcb9]/50 focus:outline-none transition-all";
+  const inputStyle = {
+    background: "rgba(0,0,0,0.28)",
+    border: "1px solid rgba(255,255,255,0.09)",
+    color: "white",
+  };
+
+  useEffect(() => {
+    if (!placesLib || !ref.current) return;
+    const ac = new placesLib.Autocomplete(ref.current, {
+      fields: ["name", "geometry", "formatted_address"],
+    });
+    const l = ac.addListener("place_changed", () => {
+      const p = ac.getPlace();
+      if (p?.geometry?.location)
+        onSelect({
+          lat: p.geometry.location.lat(),
+          lng: p.geometry.location.lng(),
+          name: p.name || "",
+          address: p.formatted_address || "",
+        });
+    });
+    return () => google.maps.event.removeListener(l);
+  }, [placesLib]);
+
+  return (
+    <div style={{ display: "flex", gap: "6px", alignItems: "center" }}>
+      <input
+        ref={ref}
+        type="text"
+        placeholder="Search attraction…"
+        className={inputClass}
+        style={inputStyle}
+        onChange={() => onSelect(null)}
+      />
+      <button
+        type="button"
+        onClick={onRemove}
+        style={{ color: "rgba(255,255,255,0.35)", fontSize: "18px", lineHeight: 1 }}
+      >
+        ×
+      </button>
+    </div>
+  );
+}
+
 export default function Fields({
   onSubmitLocations,
   onSetHotelCoords,
+  onSetAttractions,
+  onSetDaySchedules,
+  onError,
+  onLoadingChange,
 }: FieldsProps) {
   const [form, setForm] = useState({
-    tripDuration: 1,
-    transport: "walk",
     maxDistance: 20,
     budget: 100,
     cuisine: "italian",
@@ -32,6 +102,10 @@ export default function Fields({
   const [hotelPlace, setHotelPlace] = useState<HotelPlace | null>(null);
   const hotelInputRef = useRef<HTMLInputElement>(null);
   const placesLib = useMapsLibrary("places");
+
+  const [slots, setSlots] = useState<number[]>([0]);
+  const [places, setPlaces] = useState<Record<number, AttractionPlace | null>>({ 0: null });
+  const nextId = useRef(1);
 
   useEffect(() => {
     if (!placesLib || !hotelInputRef.current) return;
@@ -69,14 +143,17 @@ export default function Fields({
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!hotelPlace) {
-      alert("Please select a hotel from the autocomplete suggestions.");
+      onError("Form Incomplete: Please select a hotel from the suggestions");
       return;
     }
 
+    const attractionList = slots.map((id) => places[id]).filter(Boolean) as AttractionPlace[];
+
+    onLoadingChange(true);
     try {
       const res = await fetch("/api/food", {
         method: "POST",
@@ -86,24 +163,29 @@ export default function Fields({
           hotelAddress: hotelPlace.address,
           hotelLat: hotelPlace.lat,
           hotelLng: hotelPlace.lng,
-          days: Number(form.tripDuration),
+          days: 1,
           mealsPerDay: Number(form.mealsPerDay),
           likes: form.cuisine.split(",").map((c) => c.trim()),
           budgetPerDay: Number(form.budget),
           maxDistanceKm: Number(form.maxDistance),
+          attractions: attractionList,
         }),
       });
 
       const result = await res.json();
 
       if (res.ok) {
-        onSetHotelCoords({ lat: hotelPlace.lat, lng: hotelPlace.lng });
+        onSetHotelCoords({ lat: hotelPlace.lat, lng: hotelPlace.lng, name: hotelPlace.name });
+        onSetAttractions(attractionList);
+        onSetDaySchedules(result.days);
         onSubmitLocations(result.days.flatMap((day: any) => day.meals));
       } else {
-        alert(result.error || "Something went wrong.");
+        onError(result.error || "Something went wrong");
       }
     } catch {
-      alert("Network error. Please try again.");
+      onError("Network Error: Could not reach the server");
+    } finally {
+      onLoadingChange(false);
     }
   };
 
@@ -132,6 +214,52 @@ export default function Fields({
         Plan your trip
       </p>
       <form onSubmit={handleSubmit} className="flex flex-1 flex-col gap-4">
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center justify-between">
+            <label className={labelClass}>Tourist Attractions</label>
+            <button
+              type="button"
+              onClick={() => {
+                const id = nextId.current++;
+                setSlots((s) => [...s, id]);
+                setPlaces((p) => ({ ...p, [id]: null }));
+              }}
+              style={{
+                fontSize: "11px",
+                color: "rgba(255,255,255,0.45)",
+                border: "1px solid rgba(255,255,255,0.12)",
+                borderRadius: "5px",
+                padding: "2px 8px",
+                background: "rgba(255,255,255,0.05)",
+              }}
+            >
+              + Add
+            </button>
+          </div>
+          <div className="flex flex-col gap-2">
+            {slots.map((id) => (
+              <AttractionInput
+                key={id}
+                placesLib={placesLib}
+                onSelect={(p) => setPlaces((prev) => ({ ...prev, [id]: p }))}
+                onRemove={() => {
+                  setSlots((s) => s.filter((sid) => sid !== id));
+                  setPlaces((p) => {
+                    const next = { ...p };
+                    delete next[id];
+                    return next;
+                  });
+                }}
+              />
+            ))}
+          </div>
+        </div>
+
+        <div
+          className="my-0.5 h-px w-full"
+          style={{ background: "rgba(255,255,255,0.06)" }}
+        />
+
         <div className="flex flex-col gap-1.5">
           <label className={labelClass}>Hotel</label>
           <input
@@ -151,37 +279,21 @@ export default function Fields({
 
         <div className="grid grid-cols-2 gap-3">
           <div className="flex flex-col gap-1.5">
-            <label className={labelClass}>Duration</label>
-            <input
-              type="number"
-              name="tripDuration"
-              value={form.tripDuration}
-              onChange={handleChange}
-              placeholder="Days"
-              min={1}
-              className={inputClass}
-              style={inputStyle}
-            />
-          </div>
-          <div className="flex flex-col gap-1.5">
-            <label className={labelClass}>Meals / Day</label>
+            <label className={labelClass}>Meals</label>
             <input
               type="number"
               name="mealsPerDay"
               value={form.mealsPerDay}
               onChange={handleChange}
-              placeholder="1–5"
+              placeholder="1-5"
               min={1}
               max={5}
               className={inputClass}
               style={inputStyle}
             />
           </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-3">
           <div className="flex flex-col gap-1.5">
-            <label className={labelClass}>Budget / Day</label>
+            <label className={labelClass}>Budget</label>
             <input
               type="text"
               name="budget"
@@ -192,40 +304,19 @@ export default function Fields({
               style={inputStyle}
             />
           </div>
-          <div className="flex flex-col gap-1.5">
-            <label className={labelClass}>Max Distance</label>
-            <input
-              type="text"
-              name="maxDistance"
-              value={form.maxDistance}
-              onChange={handleChange}
-              placeholder="miles"
-              className={inputClass}
-              style={inputStyle}
-            />
-          </div>
         </div>
 
         <div className="flex flex-col gap-1.5">
-          <label className={labelClass}>Transport</label>
-          <div className="relative">
-            <select
-              name="transport"
-              value={form.transport}
-              onChange={handleChange}
-              className={`${inputClass} appearance-none pr-7`}
-              style={inputStyle}
-            >
-              <option value="walk">Walk</option>
-              <option value="car">Car</option>
-              <option value="public_transit">Transit</option>
-              <option value="bike">Bike</option>
-            </select>
-            <RiArrowDropDownLine
-              size={16}
-              className="pointer-events-none absolute top-1/2 right-2 -translate-y-1/2 text-white/40"
-            />
-          </div>
+          <label className={labelClass}>Max Distance</label>
+          <input
+            type="text"
+            name="maxDistance"
+            value={form.maxDistance}
+            onChange={handleChange}
+            placeholder="km from hotel"
+            className={inputClass}
+            style={inputStyle}
+          />
         </div>
 
         <div className="flex flex-col gap-1.5">
