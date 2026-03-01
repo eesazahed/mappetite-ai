@@ -349,9 +349,11 @@ export default function MapComponent({ locations, hotelCoords }: MapProps) {
     >
       <GMap
         style={{
-          width: "600px",
-          height: "500px",
+          width: "580px",
+          height: "480px",
           borderRadius: "16px",
+          marginLeft:"10px",
+          marginTop:"10px"
         }}
         defaultCenter={center}
         defaultZoom={14}
