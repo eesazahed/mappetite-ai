@@ -200,6 +200,55 @@ function InfoBox({ loc }: { loc: Location }) {
   );
 }
 
+function Routes({
+  hotel,
+  locations,
+}: {
+  hotel: { lat: number; lng: number };
+  locations: Location[];
+}) {
+  const map = useMap();
+
+  useEffect(() => {
+    if (!map || !locations.length) return;
+
+    const service = new google.maps.DirectionsService();
+    const renderers: google.maps.DirectionsRenderer[] = [];
+
+    locations.forEach((loc) => {
+      const renderer = new google.maps.DirectionsRenderer({
+        map,
+        suppressMarkers: true,
+        preserveViewport: true,
+        polylineOptions: {
+          strokeColor: "#5abcb9",
+          strokeOpacity: 0.45,
+          strokeWeight: 3,
+        },
+      });
+
+      service.route(
+        {
+          origin: hotel,
+          destination: { lat: loc.lat, lng: loc.lng },
+          travelMode: google.maps.TravelMode.WALKING,
+        },
+        (result, status) => {
+          if (status === google.maps.DirectionsStatus.OK && result) {
+            renderer.setDirections(result);
+          }
+        }
+      );
+
+      renderers.push(renderer);
+    });
+
+    return () => renderers.forEach((r) => r.setMap(null));
+  }, [map, hotel, locations]);
+
+  return null;
+}
+
 const darkMapStyles = [
   { elementType: "geometry", stylers: [{ color: "#122018" }] },
   { elementType: "labels.text.stroke", stylers: [{ color: "#0d1a11" }] },
@@ -287,22 +336,25 @@ export default function MapComponent({ locations, hotelCoords }: MapProps) {
 
   return (
     <div
-      className="h-full w-full overflow-hidden rounded-2xl shadow-[0_8px_40px_rgba(0,0,0,0.5)]"
+      className="rounded-2xl shadow-[0_8px_40px_rgba(0,0,0,0.5)]"
       style={{
         background: "rgba(255,255,255,0.045)",
         backdropFilter: "blur(24px)",
         border: "1px solid rgba(255,255,255,0.08)",
         padding: "6px",
+        width: "612px",
+        height: "512px",
+        boxSizing: "border-box",
       }}
     >
       <GMap
         style={{
-          width: "100%",
-          height: "100%",
+          width: "600px",
+          height: "500px",
           borderRadius: "16px",
         }}
-        center={center}
-        zoom={14}
+        defaultCenter={center}
+        defaultZoom={14}
         gestureHandling="greedy"
         zoomControl={true}
         streetViewControl={false}
@@ -310,6 +362,9 @@ export default function MapComponent({ locations, hotelCoords }: MapProps) {
         styles={darkMapStyles}
       >
         <PanTo center={center} />
+        {hotelCoords && (
+          <Routes hotel={hotelCoords} locations={locations} />
+        )}
         {locations.map((loc, idx) => (
           <Fragment key={idx}>
             <Marker position={{ lat: loc.lat, lng: loc.lng }} />

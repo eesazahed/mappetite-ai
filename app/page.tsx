@@ -37,18 +37,21 @@ export default function Home() {
 
       {apiKey && (
         <APIProvider apiKey={apiKey}>
-          <div className="flex min-h-screen flex-col font-sans md:grid md:grid-rows-[1fr_auto]">
-            <div className="relative flex flex-1 items-center justify-center overflow-hidden p-6">
-              <div className="flex flex-1 flex-row items-center justify-center p-6">
-                <div
-                  className={`flex-shrink-0 transition-transform duration-700 ease-in-out`}
-                  style={{
-                    transform: isReady
-                      ? "translateX(-20px)"
-                      : "translateX(0px)",
-                    zIndex: 10,
-                  }}
-                >
+          <div className="flex min-h-screen flex-col font-sans">
+            {/* overflow-hidden clips the row while it slides in */}
+            <div className="flex flex-1 items-center justify-center overflow-hidden p-6">
+              {/*
+                Both panels in a normal flex row.
+                When map is hidden, shift the row right so Fields stays centered.
+                Offset ≈ (map width 612px + gap 24px) / 2 = 318px
+              */}
+              <div
+                className="flex flex-shrink-0 items-center gap-6 transition-transform duration-700 ease-in-out"
+                style={{
+                  transform: isReady ? "translateX(0)" : "translateX(318px)",
+                }}
+              >
+                <div className="flex-shrink-0">
                   <Fields
                     onSubmitLocations={setLocations}
                     onSetHotelCoords={setHotelCoords}
@@ -56,7 +59,7 @@ export default function Home() {
                 </div>
 
                 <div
-                  className="ml-6 flex-grow transition-opacity duration-700 ease-in-out"
+                  className="flex-shrink-0 transition-opacity duration-500 ease-in-out"
                   style={{
                     opacity: isReady ? 1 : 0,
                     pointerEvents: isReady ? "auto" : "none",
