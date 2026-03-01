@@ -3,18 +3,20 @@
 import { APIProvider, Map } from "@vis.gl/react-google-maps";
 import { useState, useEffect } from "react";
 
-export default function ExMap() {
-  const Lat = 42.36
-  const Lng = -71.09
+const apiKey = process.env.NEXT_PUBLIC_GMAPS_API_KEY!;
 
-  const [mapVisible, showMap] = useState(false)
-  const [apiKey, setApiKey] = useState<string | null>(null)
+export default function ExMap() {
+  const Lat = 42.36;
+  const Lng = -71.09;
+
+  const [mapVisible, showMap] = useState(false);
+  const [apiKey, setApiKey] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/api/maps-key")
-      .then(res => res.json())
-      .then(data => setApiKey(data.apiKey))
-  }, [])
+      .then((res) => res.json())
+      .then((data) => setApiKey(data.apiKey));
+  }, []);
 
   return (
     <div 

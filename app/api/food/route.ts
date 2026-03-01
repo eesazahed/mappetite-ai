@@ -2,27 +2,12 @@ import { NextResponse } from "next/server";
 
 const GMAPS_API_KEY = process.env.GMAPS_API_KEY!;
 
-/* =========================
-   HARDCODED USER INPUT
-========================= */
+async function geocode(hotelName: string, city: string) {
+  const query = `${hotelName}, ${city}`;
 
-const CITY = "Paris, France";
-const HOTEL_NAME = "Hotel Georgette, Paris";
-const DAYS = 2;
-const MEALS_PER_DAY = 2;
-const LIKES = ["italian", "french", "american"];
-const BUDGET_PER_DAY = 50; // USD
-const MAX_DISTANCE_KM = 10;
-
-/* =========================
-   HELPERS
-========================= */
-
-// 1️⃣ Geocode hotel
-async function geocode(address: string) {
   const res = await fetch(
     `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
-      address,
+      query,
     )}&key=${GMAPS_API_KEY}`,
   );
 
@@ -38,7 +23,6 @@ async function geocode(address: string) {
   };
 }
 
-// 2️⃣ Nearby search by cuisine
 async function searchRestaurants(
   lat: number,
   lng: number,
@@ -53,6 +37,8 @@ async function searchRestaurants(
 
   const data = await res.json();
 
+  console.log(data.results);
+
   return (data.results || []).map((r: any) => ({
     place_id: r.place_id,
     name: r.name,
@@ -64,69 +50,72 @@ async function searchRestaurants(
   }));
 }
 
-// 3️⃣ Remove duplicate restaurants
 function dedupeRestaurants(restaurants: any[]) {
   return Array.from(new Map(restaurants.map((r) => [r.place_id, r])).values());
 }
 
-// 4️⃣ Filter by budget
-function filterByBudget(restaurants: any[]) {
-  const maxPerMeal = BUDGET_PER_DAY / MEALS_PER_DAY;
-
-  // price_level mapping estimate
-  // 0-1 cheap, 2 moderate, 3 expensive
-  return restaurants.filter((r) => {
-    if (r.price_level == null) return false;
-    if (maxPerMeal <= 20) return r.price_level <= 2;
-    if (maxPerMeal <= 40) return r.price_level <= 3;
-    return true;
-  });
+function priceLevelFromBudget(maxPerMeal: number) {
+  if (maxPerMeal <= 10) return [0, 1];
+  if (maxPerMeal <= 30) return [0, 2];
+  if (maxPerMeal <= 60) return [0, 3];
+  return [0, 4];
 }
 
-// 5️⃣ Build meal schedule
-function buildSchedule(restaurants: any[]) {
+function filterByBudget(
+  restaurants: any[],
+  budgetPerDay: number,
+  mealsPerDay: number,
+) {
+  const maxPerMeal = budgetPerDay / mealsPerDay;
+  const [minLevel, maxLevel] = priceLevelFromBudget(maxPerMeal);
+
+  return restaurants.filter(
+    (r) => r.price_level != null && r.price_level <= maxLevel,
+  );
+}
+
+function buildSchedule(restaurants: any[], days: number, mealsPerDay: number) {
   const shuffled = [...restaurants].sort(() => 0.5 - Math.random());
   let index = 0;
 
-  const days = [];
+  const schedule: any[] = [];
 
-  for (let d = 1; d <= DAYS; d++) {
+  for (let d = 1; d <= days; d++) {
     const meals = [];
-
-    for (let m = 0; m < MEALS_PER_DAY; m++) {
+    for (let m = 0; m < mealsPerDay; m++) {
       if (index >= shuffled.length) break;
-
       meals.push({
         type: ["breakfast", "lunch", "dinner"][m] ?? `meal_${m + 1}`,
         ...shuffled[index],
       });
-
       index++;
     }
-
-    days.push({
-      day: d,
-      meals,
-    });
+    schedule.push({ day: d, meals });
   }
 
-  return days;
+  return schedule;
 }
 
-/* =========================
-   MAIN ROUTE
-========================= */
-
-export async function GET() {
+export async function POST(request: Request) {
   try {
-    // 1️⃣ Geocode hotel
-    const hotel = await geocode(HOTEL_NAME);
-    const radiusMeters = MAX_DISTANCE_KM * 1000;
+    const data = await request.json();
 
-    // 2️⃣ Fetch restaurants by cuisine
+    const {
+      city,
+      hotelName,
+      days,
+      mealsPerDay,
+      likes,
+      budgetPerDay,
+      maxDistanceKm,
+    } = data;
+
+    const hotel = await geocode(hotelName, city);
+    const radiusMeters = maxDistanceKm * 1000;
+
     let allRestaurants: any[] = [];
 
-    for (const cuisine of LIKES) {
+    for (const cuisine of likes) {
       const results = await searchRestaurants(
         hotel.lat,
         hotel.lng,
@@ -136,32 +125,33 @@ export async function GET() {
       allRestaurants.push(...results);
     }
 
-    // 3️⃣ Deduplicate
     const uniqueRestaurants = dedupeRestaurants(allRestaurants);
+    const budgetFiltered = filterByBudget(
+      uniqueRestaurants,
+      budgetPerDay,
+      mealsPerDay,
+    );
 
-    // 4️⃣ Budget filter
-    const budgetFiltered = filterByBudget(uniqueRestaurants);
-
-    if (budgetFiltered.length < DAYS * MEALS_PER_DAY) {
+    if (budgetFiltered.length < days * mealsPerDay) {
       return NextResponse.json({
         error: "Not enough restaurants within budget and distance",
       });
     }
 
-    // 5️⃣ Build plan
-    const schedule = buildSchedule(budgetFiltered);
+    const schedule = buildSchedule(budgetFiltered, days, mealsPerDay);
 
     return NextResponse.json({
-      city: CITY,
+      message: "Meal plan generated successfully",
+      city,
       hotel: {
-        name: HOTEL_NAME,
+        name: hotelName,
         address: hotel.formatted_address,
         lat: hotel.lat,
         lng: hotel.lng,
       },
       days: schedule,
-      total_days: DAYS,
-      meals_per_day: MEALS_PER_DAY,
+      total_days: days,
+      meals_per_day: mealsPerDay,
       restaurants_considered: uniqueRestaurants.length,
       restaurants_within_budget: budgetFiltered.length,
     });
