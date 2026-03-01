@@ -14,7 +14,6 @@ export default function Home() {
     lng: number;
   } | null>(null);
   const [apiKey, setApiKey] = useState<string | null>(null);
-
   const scrollContainer = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -23,34 +22,50 @@ export default function Home() {
       .then((data) => setApiKey(data.apiKey));
   }, []);
 
+  const isReady = locations.length > 0 && hotelCoords;
+
   return (
     <div
       ref={scrollContainer}
-      className="flex h-screen flex-col overflow-x-hidden overflow-y-auto"
+      style={{
+        background:
+          "radial-gradient(ellipse at 78% 5%, rgba(90,188,185,0.07) 0%, transparent 28%), radial-gradient(ellipse at 12% 62%, rgba(38,83,43,0.5) 0%, transparent 40%), linear-gradient(to bottom, #26532b 0%, #1a3520 18%, #0d2015 42%, #0b1a0e 62%)",
+      }}
+      className="h-screen overflow-x-hidden overflow-y-auto overscroll-none"
     >
-      {/* Single continuous background spanning both sections */}
-      <div
-        style={{
-          background:
-            "radial-gradient(ellipse at 78% 5%, rgba(90,188,185,0.07) 0%, transparent 28%), radial-gradient(ellipse at 12% 62%, rgba(38,83,43,0.5) 0%, transparent 40%), linear-gradient(to bottom, #26532b 0%, #1a3520 18%, #0d2015 42%, #0b1a0e 62%)",
-        }}
-      >
-        <Header scrollContainer={scrollContainer as RefObject<HTMLDivElement>} />
-        {apiKey && (
-          <APIProvider apiKey={apiKey}>
-            <div className="grid h-screen grid-rows-[1fr_auto] font-sans">
-              <div className="flex flex-col items-start justify-center gap-6 overflow-hidden p-8 md:flex-row">
-                <Fields
-                  onSubmitLocations={setLocations}
-                  onSetHotelCoords={setHotelCoords}
-                />
-                <Map locations={locations} hotelCoords={hotelCoords} />
+      <Header scrollContainer={scrollContainer as RefObject<HTMLDivElement>} />
+
+      {apiKey && (
+        <APIProvider apiKey={apiKey}>
+          <div className="flex min-h-screen flex-col font-sans md:grid md:grid-rows-[1fr_auto]">
+            <div className="relative flex flex-1 items-center justify-center overflow-hidden p-6">
+              <div className="flex h-full w-full items-center justify-center transition-all duration-700 ease-in-out">
+                <div
+                  className={`flex-shrink-0 transition-transform duration-700 ease-in-out ${
+                    isReady ? "-translate-x-1/2" : "translate-x-0"
+                  }`}
+                  style={{ zIndex: 10 }}
+                >
+                  <Fields
+                    onSubmitLocations={setLocations}
+                    onSetHotelCoords={setHotelCoords}
+                  />
+                </div>
+
+                <div
+                  className={`absolute top-0 left-0 h-full w-full transition-transform duration-700 ease-in-out ${
+                    isReady ? "translate-x-0" : "translate-x-full"
+                  }`}
+                >
+                  <Map locations={locations} hotelCoords={hotelCoords} />
+                </div>
               </div>
-              <Footer />
             </div>
-          </APIProvider>
-        )}
-      </div>
+
+            <Footer />
+          </div>
+        </APIProvider>
+      )}
     </div>
   );
 }
