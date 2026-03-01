@@ -64,7 +64,7 @@ export default function Fields() {
                             <option value="public_transit">Public transit</option>
                             <option value="bike">Bike</option>
                         </select>
-                        <ChevronDown size={15} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+                        <ChevronDown size={15} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" />
                     </div>
                 </div>
                 <div className="flex flex-col gap-1">
@@ -93,7 +93,7 @@ export default function Fields() {
                             </svg>
                         )}
                     </button>
-                    <span className="text-sm text-gray-600">Include fast food</span>
+                    <span className="text-sm text-gray-700">Include fast food</span>
                 </div>
                 <div className="flex flex-col gap-1">
                     <label className={labelClass} style={{ fontWeight: 600 }}>Meals per Day</label>
