@@ -1,7 +1,7 @@
 "use client";
 
 import { APIProvider, Map } from "@vis.gl/react-google-maps";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const apiKey = process.env.NEXT_PUBLIC_GMAPS_API_KEY!;
 

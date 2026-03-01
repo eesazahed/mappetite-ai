@@ -1,3 +1,3 @@
 export async function GET() {
-  return Response.json({ apiKey: process.env.GMAP_API_KEY });
+  return Response.json({ apiKey: process.env.NEXT_PUBLIC_GMAPS_API_KEY });
 }
