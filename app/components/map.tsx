@@ -23,7 +23,15 @@ export default function ExMap({ locations }: ExMapProps) {
   }, []);
 
   return (
-    <div style={{ width: "48vw", height: "600px" }} className="...">
+    <div style={{ width: "40vw", 
+    height: "600px", 
+    opacity: mapVisible ? 1 : 0, 
+    transition: "opacity 1s ease", 
+    pointerEvents: mapVisible ? "auto" : "none", 
+    marginLeft: "40px", 
+    filter: "drop-shadow(0px 0px 0px #000)" }
+  } 
+    className = "h-fit w-[48vw] rounded-2xl border border-gray-100 bg-white p-7 shadow-sm" >
       {apiKey && (
         <APIProvider apiKey={apiKey} onLoad={() => showMap(true)}>
           <Map

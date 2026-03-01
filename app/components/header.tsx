@@ -114,7 +114,7 @@ export default function Header({ scrollContainer }: HeaderProps) {
           </div>
         </div>
 
-        <div className="mt-12 flex gap-8">
+        <div className="flex gap-8">
           {images.map((src, i) => (
             <div
               key={i}
