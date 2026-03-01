@@ -21,13 +21,12 @@ export default function Fields({
   onSetHotelCoords,
 }: FieldsProps) {
   const [form, setForm] = useState({
-    tripDuration: "",
-    transport: "",
-    maxDistance: "",
-    budget: "",
-    cuisine: "",
-    includeFastFood: false,
-    mealsPerDay: "",
+    tripDuration: 1,
+    transport: "walk",
+    maxDistance: 100,
+    budget: 100,
+    cuisine: "italian",
+    mealsPerDay: 3,
   });
 
   const [hotelPlace, setHotelPlace] = useState<HotelPlace | null>(null);
@@ -180,7 +179,7 @@ export default function Fields({
             name="maxDistance"
             value={form.maxDistance}
             onChange={handleChange}
-            placeholder="Miles or km"
+            placeholder="Distance (miles)"
             className={inputClass}
           />
         </div>
@@ -192,7 +191,7 @@ export default function Fields({
             name="budget"
             value={form.budget}
             onChange={handleChange}
-            placeholder="Amount"
+            placeholder="Amount (USD)"
             className={inputClass}
           />
         </div>
@@ -207,38 +206,6 @@ export default function Fields({
             placeholder="Italian, Thai..."
             className={inputClass}
           />
-        </div>
-
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={() =>
-              setForm((prev) => ({
-                ...prev,
-                includeFastFood: !prev.includeFastFood,
-              }))
-            }
-            className={`flex h-4 w-4 items-center justify-center rounded border transition ${
-              form.includeFastFood
-                ? "bg-brand-500 border-brand-500"
-                : "border-gray-300 bg-white"
-            }`}
-          >
-            {form.includeFastFood && (
-              <svg width="8" height="6" viewBox="0 0 10 8" fill="none">
-                <path
-                  d="M1 4L3.5 6.5L9 1"
-                  stroke="white"
-                  strokeWidth="1.6"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            )}
-          </button>
-          <span className="text-xs text-gray-600">
-            Include fast food
-          </span>
         </div>
 
         <div className="flex flex-col gap-1">
@@ -257,7 +224,7 @@ export default function Fields({
 
         <button
           type="submit"
-          className="mt-2 w-full rounded-lg bg-brand-700 py-2 text-xs font-semibold tracking-wide text-white shadow-sm transition-all hover:bg-brand-900 active:scale-[0.98]"
+          className="bg-brand-700 hover:bg-brand-900 mt-2 w-full rounded-lg py-2 text-xs font-semibold tracking-wide text-white shadow-sm transition-all active:scale-[0.98]"
         >
           Plan Meals
         </button>

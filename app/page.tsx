@@ -33,13 +33,13 @@ export default function Home() {
         <APIProvider apiKey={apiKey}>
           <div className="grid h-screen grid-rows-[1fr_auto] bg-(--color-brand-700) font-sans">
             <div className="flex flex-col overflow-hidden p-6 md:flex-row">
-          <Fields
+              <Fields
                 onSubmitLocations={setLocations}
                 onSetHotelCoords={setHotelCoords}
               />
               <Map locations={locations} hotelCoords={hotelCoords} />
-        </div>
-        <Footer />
+            </div>
+            <Footer />
           </div>
         </APIProvider>
       )}
