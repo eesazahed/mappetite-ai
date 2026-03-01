@@ -1,13 +1,15 @@
 import Header from "./components/header";
+import Map from "./components/map";
+import FoodInfo from "./components/foodInfo";
 
 export default function Home() {
   return (
     <>
       <Header />
-      <div className="flex min-h-screen bg-zinc-50 font-sans dark:bg-black p-4">
-        <main className="flex min-h-screen w-full max-w-3xl flex-col items-center bg-white dark:bg-black sm:items-start">
-          <p>test</p>
-        </main>
+      <div className="grid grid-cols-[auto_1fr] min-h-screen bg-gray-400 font-sans dark:bg-gray-400 p-4">
+        {/* change colors above */}
+        <FoodInfo />
+        <Map />
       </div>
     </>
   );
