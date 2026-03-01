@@ -19,13 +19,16 @@ export default function ExMap() {
   return (
     <div 
         style={{
-          width: "100%",
-          height: "100%",
+          width: "40vw",
+          height: "600px",
           opacity: mapVisible ? 1 : 0,
           transition: "opacity 1s ease",
-          pointerEvents: mapVisible ? "auto" : "none"
-        }}>
-
+          pointerEvents: mapVisible ? "auto" : "none",
+          marginLeft: "40px",
+          filter: "none !important",
+        }}
+        className = "h-fit w-[48vw] rounded-2xl border border-gray-100 bg-white p-7 shadow-sm"
+      >
         {apiKey && (
           <APIProvider
             apiKey={apiKey}
@@ -38,7 +41,6 @@ export default function ExMap() {
               defaultCenter={{ lat: Lat, lng: Lng }}
               defaultZoom={18}
               gestureHandling="greedy"
-              
             ></Map>
           </APIProvider>
         )}
