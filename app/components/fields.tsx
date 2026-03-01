@@ -16,10 +16,7 @@ type HotelPlace = {
   address: string;
 };
 
-export default function Fields({
-  onSubmitLocations,
-  onSetHotelCoords,
-}: FieldsProps) {
+export default function Fields({ onSubmitLocations, onSetHotelCoords }: FieldsProps) {
   const [form, setForm] = useState({
     tripDuration: 1,
     transport: "walk",
@@ -58,9 +55,7 @@ export default function Fields({
     };
   }, [placesLib]);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const target = e.target;
     if (target instanceof HTMLInputElement && target.type === "checkbox") {
       setForm((prev) => ({ ...prev, [target.name]: target.checked }));
@@ -97,13 +92,8 @@ export default function Fields({
       const result = await res.json();
 
       if (res.ok) {
-        console.log("Success:", result);
-        onSetHotelCoords({
-          lat: hotelPlace.lat,
-          lng: hotelPlace.lng,
-        });
-        const allMeals = result.days.flatMap((day: any) => day.meals);
-        onSubmitLocations(allMeals);
+        onSetHotelCoords({ lat: hotelPlace.lat, lng: hotelPlace.lng });
+        onSubmitLocations(result.days.flatMap((day: any) => day.meals));
       } else {
         alert(result.error || "Something went wrong.");
       }

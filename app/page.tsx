@@ -26,7 +26,7 @@ export default function Home() {
   return (
     <div
       ref={scrollContainer}
-      className="h-screen overflow-x-hidden overflow-y-auto overscroll-none"
+      className="flex h-screen flex-col overflow-x-hidden overflow-y-auto"
     >
       {/* Single continuous background spanning both sections */}
       <div
