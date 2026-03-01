@@ -26,18 +26,21 @@ export default function Home() {
   return (
     <div
       ref={scrollContainer}
-      className="h-screen overflow-x-hidden overflow-y-auto overscroll-none"
+      className="flex h-screen flex-col overflow-x-hidden overflow-y-auto"
     >
       <Header scrollContainer={scrollContainer as RefObject<HTMLDivElement>} />
+
       {apiKey && (
         <APIProvider apiKey={apiKey}>
-          <div className="grid h-screen grid-rows-[1fr_auto] bg-(--color-brand-700) font-sans">
-            <div className="flex flex-col overflow-hidden p-6 md:flex-row">
+          <div className="flex h-screen flex-col bg-(--color-brand-700) font-sans md:grid md:grid-rows-[1fr_auto]">
+            <div className="relative flex md:flex-1 items-center justify-center p-6">
               <Fields
                 onSubmitLocations={setLocations}
                 onSetHotelCoords={setHotelCoords}
               />
-              <Map locations={locations} hotelCoords={hotelCoords} />
+              <div className="absolute inset-0 hidden">
+                <Map locations={locations} hotelCoords={hotelCoords} />
+              </div>
             </div>
             <Footer />
           </div>

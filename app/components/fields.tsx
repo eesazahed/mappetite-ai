@@ -16,10 +16,7 @@ type HotelPlace = {
   address: string;
 };
 
-export default function Fields({
-  onSubmitLocations,
-  onSetHotelCoords,
-}: FieldsProps) {
+export default function Fields({ onSubmitLocations, onSetHotelCoords }: FieldsProps) {
   const [form, setForm] = useState({
     tripDuration: 1,
     transport: "walk",
@@ -58,9 +55,7 @@ export default function Fields({
     };
   }, [placesLib]);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const target = e.target;
     if (target instanceof HTMLInputElement && target.type === "checkbox") {
       setForm((prev) => ({ ...prev, [target.name]: target.checked }));
@@ -97,13 +92,8 @@ export default function Fields({
       const result = await res.json();
 
       if (res.ok) {
-        console.log("Success:", result);
-        onSetHotelCoords({
-          lat: hotelPlace.lat,
-          lng: hotelPlace.lng,
-        });
-        const allMeals = result.days.flatMap((day: any) => day.meals);
-        onSubmitLocations(allMeals);
+        onSetHotelCoords({ lat: hotelPlace.lat, lng: hotelPlace.lng });
+        onSubmitLocations(result.days.flatMap((day: any) => day.meals));
       } else {
         alert(result.error || "Something went wrong.");
       }
@@ -112,19 +102,14 @@ export default function Fields({
     }
   };
 
-  const labelClass =
-    "text-[10px] text-gray-500 uppercase tracking-wider font-semibold";
-
-  const inputClass =
-    "w-full border border-gray-200 rounded-md px-2.5 py-1.5 text-xs focus:ring-2 focus:ring-brand-500 focus:outline-none transition-all";
+  const labelClass = "text-[10px] text-gray-500 uppercase tracking-wider font-semibold";
+  const inputClass = "w-full border border-gray-200 rounded-md px-2.5 py-1.5 text-xs focus:ring-2 focus:ring-brand-500 focus:outline-none transition-all";
 
   return (
-    <div className="h-fit w-full max-w-md rounded-xl border border-gray-100 bg-white p-5 shadow-sm">
-      <form onSubmit={handleSubmit} className="flex flex-col gap-2.5">
+    <div className="flex h-fit w-full max-w-md items-center justify-center rounded-xl border border-gray-100 bg-white p-5 shadow-sm md:mx-auto md:h-fit">
+      <form onSubmit={handleSubmit} className="flex w-full flex-col gap-2.5">
         <div className="flex flex-col gap-1">
-          <label className={labelClass} style={{ fontWeight: 600 }}>
-            Hotel
-          </label>
+          <label className={labelClass}>Hotel</label>
           <input
             ref={hotelInputRef}
             type="text"
