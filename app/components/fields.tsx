@@ -23,7 +23,7 @@ export default function Fields({
   const [form, setForm] = useState({
     tripDuration: 1,
     transport: "walk",
-    maxDistance: 100,
+    maxDistance: 20,
     budget: 100,
     cuisine: "italian",
     mealsPerDay: 3,
@@ -113,53 +113,111 @@ export default function Fields({
   };
 
   const labelClass =
-    "text-[10px] text-gray-500 uppercase tracking-wider font-semibold";
+    "text-xs text-white/40 uppercase tracking-[0.15em] font-semibold";
 
   const inputClass =
-    "w-full border border-gray-200 rounded-md px-2.5 py-1.5 text-xs focus:ring-2 focus:ring-brand-500 focus:outline-none transition-all";
+    "w-full rounded-lg px-3 py-2.5 text-sm text-white placeholder:text-white/25 focus:ring-1 focus:ring-[#5abcb9]/50 focus:outline-none transition-all";
+
+  const inputStyle = {
+    background: "rgba(0,0,0,0.28)",
+    border: "1px solid rgba(255,255,255,0.09)",
+    color: "white",
+  };
 
   return (
-    <div className="h-fit w-full max-w-md rounded-xl border border-gray-100 bg-white p-5 shadow-sm">
-      <form onSubmit={handleSubmit} className="flex flex-col gap-2.5">
-        <div className="flex flex-col gap-1">
-          <label className={labelClass} style={{ fontWeight: 600 }}>
-            Hotel
-          </label>
+    <div
+      className="flex h-full w-[400px] shrink-0 flex-col rounded-2xl p-6 shadow-[0_8px_40px_rgba(0,0,0,0.5)]"
+      style={{
+        background: "rgba(255,255,255,0.045)",
+        backdropFilter: "blur(24px)",
+        border: "1px solid rgba(255,255,255,0.08)",
+      }}
+    >
+      <p className="mb-5 text-sm font-semibold tracking-[0.12em] text-white/60 uppercase">
+        Plan your trip
+      </p>
+      <form onSubmit={handleSubmit} className="flex flex-1 flex-col gap-4">
+        <div className="flex flex-col gap-1.5">
+          <label className={labelClass}>Hotel</label>
           <input
             ref={hotelInputRef}
             type="text"
-            placeholder="Search for your hotel..."
+            placeholder="Search for your hotel…"
             className={inputClass}
+            style={inputStyle}
             onChange={() => setHotelPlace(null)}
           />
         </div>
 
-        <div className="flex flex-col gap-1">
-          <label className={labelClass}>Trip Duration</label>
-          <input
-            type="number"
-            name="tripDuration"
-            value={form.tripDuration}
-            onChange={handleChange}
-            placeholder="Days"
-            min={1}
-            className={inputClass}
-          />
+        <div className="my-0.5 h-px w-full" style={{ background: "rgba(255,255,255,0.06)" }} />
+
+        <div className="grid grid-cols-2 gap-3">
+          <div className="flex flex-col gap-1.5">
+            <label className={labelClass}>Duration</label>
+            <input
+              type="number"
+              name="tripDuration"
+              value={form.tripDuration}
+              onChange={handleChange}
+              placeholder="Days"
+              min={1}
+              className={inputClass}
+              style={inputStyle}
+            />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <label className={labelClass}>Meals / Day</label>
+            <input
+              type="number"
+              name="mealsPerDay"
+              value={form.mealsPerDay}
+              onChange={handleChange}
+              placeholder="1–5"
+              min={1}
+              max={5}
+              className={inputClass}
+              style={inputStyle}
+            />
+          </div>
         </div>
 
-        <div className="flex flex-col gap-1">
-          <label className={labelClass}>Mode of Transport</label>
+        <div className="grid grid-cols-2 gap-3">
+          <div className="flex flex-col gap-1.5">
+            <label className={labelClass}>Budget / Day</label>
+            <input
+              type="text"
+              name="budget"
+              value={form.budget}
+              onChange={handleChange}
+              placeholder="USD"
+              className={inputClass}
+              style={inputStyle}
+            />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <label className={labelClass}>Max Distance</label>
+            <input
+              type="text"
+              name="maxDistance"
+              value={form.maxDistance}
+              onChange={handleChange}
+              placeholder="miles"
+              className={inputClass}
+              style={inputStyle}
+            />
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-1.5">
+          <label className={labelClass}>Transport</label>
           <div className="relative">
             <select
               name="transport"
               value={form.transport}
               onChange={handleChange}
-              className={`${inputClass} appearance-none pr-8`}
-              style={{ color: form.transport ? undefined : "#c4c4c4" }}
+              className={`${inputClass} appearance-none pr-7`}
+              style={inputStyle}
             >
-              <option value="" disabled hidden>
-                Walk, car, transit
-              </option>
               <option value="walk">Walk</option>
               <option value="car">Car</option>
               <option value="public_transit">Transit</option>
@@ -167,67 +225,37 @@ export default function Fields({
             </select>
             <RiArrowDropDownLine
               size={16}
-              className="pointer-events-none absolute top-1/2 right-2 -translate-y-1/2 text-gray-500"
+              className="pointer-events-none absolute top-1/2 right-2 -translate-y-1/2 text-white/40"
             />
           </div>
         </div>
 
-        <div className="flex flex-col gap-1">
-          <label className={labelClass}>Max Distance</label>
-          <input
-            type="text"
-            name="maxDistance"
-            value={form.maxDistance}
-            onChange={handleChange}
-            placeholder="Distance (miles)"
-            className={inputClass}
-          />
-        </div>
-
-        <div className="flex flex-col gap-1">
-          <label className={labelClass}>Budget / Day</label>
-          <input
-            type="text"
-            name="budget"
-            value={form.budget}
-            onChange={handleChange}
-            placeholder="Amount (USD)"
-            className={inputClass}
-          />
-        </div>
-
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-1.5">
           <label className={labelClass}>Preferred Cuisine</label>
           <input
             type="text"
             name="cuisine"
             value={form.cuisine}
             onChange={handleChange}
-            placeholder="Italian, Thai..."
+            placeholder="Italian, Thai…"
             className={inputClass}
+            style={inputStyle}
           />
         </div>
 
-        <div className="flex flex-col gap-1">
-          <label className={labelClass}>Meals / Day</label>
-          <input
-            type="number"
-            name="mealsPerDay"
-            value={form.mealsPerDay}
-            onChange={handleChange}
-            placeholder="1–5"
-            min={1}
-            max={5}
-            className={inputClass}
-          />
+        <div className="mt-auto flex flex-col gap-3 pt-2">
+          <div className="h-px w-full" style={{ background: "rgba(255,255,255,0.06)" }} />
+          <button
+            type="submit"
+            className="w-full rounded-lg py-3 text-sm font-semibold tracking-widest text-white uppercase transition-all active:scale-[0.98]"
+            style={{
+              background: "linear-gradient(135deg, #399e5a, #26532b)",
+              boxShadow: "0 0 24px rgba(57,158,90,0.4)",
+            }}
+          >
+            Plan Meals
+          </button>
         </div>
-
-        <button
-          type="submit"
-          className="bg-brand-700 hover:bg-brand-900 mt-2 w-full rounded-lg py-2 text-xs font-semibold tracking-wide text-white shadow-sm transition-all active:scale-[0.98]"
-        >
-          Plan Meals
-        </button>
       </form>
     </div>
   );

@@ -93,8 +93,8 @@
 input,
 select,
 textarea {
-  background-color: #ffffff;
-  color: #111827;
+  background-color: transparent;
+  color: inherit;
 }
 
 .img {

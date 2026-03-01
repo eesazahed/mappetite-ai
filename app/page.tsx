@@ -28,21 +28,29 @@ export default function Home() {
       ref={scrollContainer}
       className="h-screen overflow-x-hidden overflow-y-auto overscroll-none"
     >
-      <Header scrollContainer={scrollContainer as RefObject<HTMLDivElement>} />
-      {apiKey && (
-        <APIProvider apiKey={apiKey}>
-          <div className="grid h-screen grid-rows-[1fr_auto] bg-(--color-brand-700) font-sans">
-            <div className="flex flex-col overflow-hidden p-6 md:flex-row">
-              <Fields
-                onSubmitLocations={setLocations}
-                onSetHotelCoords={setHotelCoords}
-              />
-              <Map locations={locations} hotelCoords={hotelCoords} />
+      {/* Single continuous background spanning both sections */}
+      <div
+        style={{
+          background:
+            "radial-gradient(ellipse at 78% 5%, rgba(90,188,185,0.07) 0%, transparent 28%), radial-gradient(ellipse at 12% 62%, rgba(38,83,43,0.5) 0%, transparent 40%), linear-gradient(to bottom, #26532b 0%, #1a3520 18%, #0d2015 42%, #0b1a0e 62%)",
+        }}
+      >
+        <Header scrollContainer={scrollContainer as RefObject<HTMLDivElement>} />
+        {apiKey && (
+          <APIProvider apiKey={apiKey}>
+            <div className="grid h-screen grid-rows-[1fr_auto] font-sans">
+              <div className="flex flex-col items-start justify-center gap-6 overflow-hidden p-8 md:flex-row">
+                <Fields
+                  onSubmitLocations={setLocations}
+                  onSetHotelCoords={setHotelCoords}
+                />
+                <Map locations={locations} hotelCoords={hotelCoords} />
+              </div>
+              <Footer />
             </div>
-            <Footer />
-          </div>
-        </APIProvider>
-      )}
+          </APIProvider>
+        )}
+      </div>
     </div>
   );
 }

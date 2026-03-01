@@ -68,7 +68,7 @@ export default function Header({ scrollContainer }: HeaderProps) {
   }, [scrollContainer]);
 
   return (
-    <div className="grid min-h-screen w-full grid-rows-[1fr_auto] overflow-hidden bg-linear-to-b from-(--color-brand-900) from-80% to-(--color-brand-700)">
+    <div className="grid min-h-screen w-full grid-rows-[1fr_auto] overflow-hidden bg-transparent">
       <TextCursor
         text="🍔"
         spacing={80}

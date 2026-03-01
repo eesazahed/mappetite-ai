@@ -25,6 +25,26 @@ type MapProps = {
 
 const containerStyle = { width: "48vw", height: "600px" };
 
+const darkMapStyles = [
+  { elementType: "geometry", stylers: [{ color: "#122018" }] },
+  { elementType: "labels.text.stroke", stylers: [{ color: "#0d1a11" }] },
+  { elementType: "labels.text.fill", stylers: [{ color: "#7aab8a" }] },
+  { featureType: "administrative.locality", elementType: "labels.text.fill", stylers: [{ color: "#9ec4ae" }] },
+  { featureType: "poi", elementType: "labels.text.fill", stylers: [{ color: "#5f8f72" }] },
+  { featureType: "poi.park", elementType: "geometry", stylers: [{ color: "#1a2f22" }] },
+  { featureType: "poi.park", elementType: "labels.text.fill", stylers: [{ color: "#4f8a64" }] },
+  { featureType: "road", elementType: "geometry", stylers: [{ color: "#1e3829" }] },
+  { featureType: "road", elementType: "geometry.stroke", stylers: [{ color: "#172e20" }] },
+  { featureType: "road", elementType: "labels.text.fill", stylers: [{ color: "#89b89a" }] },
+  { featureType: "road.highway", elementType: "geometry", stylers: [{ color: "#264d38" }] },
+  { featureType: "road.highway", elementType: "geometry.stroke", stylers: [{ color: "#1c3a2b" }] },
+  { featureType: "road.highway", elementType: "labels.text.fill", stylers: [{ color: "#7aab8a" }] },
+  { featureType: "transit", elementType: "geometry", stylers: [{ color: "#1a3024" }] },
+  { featureType: "transit.station", elementType: "labels.text.fill", stylers: [{ color: "#6a9e7e" }] },
+  { featureType: "water", elementType: "geometry", stylers: [{ color: "#0c1f18" }] },
+  { featureType: "water", elementType: "labels.text.fill", stylers: [{ color: "#3d7558" }] },
+];
+
 export default function MapComponent({ locations, hotelCoords }: MapProps) {
   const [apiKey, setApiKey] = useState<string | null>(null);
   const [center, setCenter] = useState({ lat: 42.36, lng: -71.09 });
@@ -47,12 +67,17 @@ export default function MapComponent({ locations, hotelCoords }: MapProps) {
 
   return (
     <div
-      className="h-fit rounded-2xl border border-gray-100 bg-white p-7 shadow-sm"
-      style={{ marginLeft: "40px" }}
+      className="h-fit overflow-hidden rounded-2xl shadow-[0_8px_40px_rgba(0,0,0,0.5)]"
+      style={{
+        background: "rgba(255,255,255,0.045)",
+        backdropFilter: "blur(24px)",
+        border: "1px solid rgba(255,255,255,0.08)",
+        padding: "6px",
+      }}
     >
       <LoadScript googleMapsApiKey={apiKey}>
         <GoogleMap
-          mapContainerStyle={containerStyle}
+          mapContainerStyle={{ ...containerStyle, borderRadius: "16px" }}
           center={center}
           zoom={14}
           options={{
@@ -61,6 +86,7 @@ export default function MapComponent({ locations, hotelCoords }: MapProps) {
             draggable: true,
             streetViewControl: false,
             mapTypeControl: false,
+            styles: darkMapStyles,
           }}
         >
           {locations.map((loc, idx) => (
