@@ -66,3 +66,9 @@ Click **Plan meals** to generate your schedule and see restaurants on the map.
 - [Tailwind CSS](https://tailwindcss.com)
 - [@vis.gl/react-google-maps](https://visgl.github.io/react-google-maps/) for map rendering
 - Google Maps Geocoding + Places APIs
+
+## Made with ❤️ by:
+- [Eesa Zahed](https://github.com/eesazahed)
+- [Alex Radu](https://github.com/alextheradu)
+- [James Cocone](https://github.com/EpicCarlito)
+- [Jakub Binkowski (toilet seat warmer)](https://github.com/jaywkz)
