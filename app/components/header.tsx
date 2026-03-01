@@ -72,9 +72,9 @@ export default function Header({ scrollContainer }: HeaderProps) {
         removalInterval={20}
         maxPoints={10}
       />
-      <div className="absolute top-0 left-0 flex h-full w-full flex-col items-center justify-center">
+      <div className="absolute z-10 top-0 left-0 flex h-full w-full flex-col items-center justify-center pointer-events-none">
         <div
-          className={`flex flex-col items-center justify-center transition-transform duration-700 ${animationDone ? "-translate-y-16" : "translate-y-0"
+          className={`pointer-events-auto flex flex-col items-center justify-center transition-transform duration-700 ${animationDone ? "-translate-y-16" : "translate-y-0"
             }`}
         >
           <div className="relative">
@@ -108,7 +108,6 @@ export default function Header({ scrollContainer }: HeaderProps) {
               </span>
             </h1>
             <p className="mt-2 text-center text-2xl text-gray-400">
-              {/* 750ms delay before texttype */}
               <TextType
                 text={["your personal foodie", "scrumptious restaurants", "search less, eat more"]}
                 typingSpeed={75}
@@ -123,7 +122,7 @@ export default function Header({ scrollContainer }: HeaderProps) {
           </div>
         </div>
 
-        <div className="flex gap-8">
+        <div className="pointer-events-auto flex gap-8">
           {images.map((src, i) => (
             <div
               key={i}

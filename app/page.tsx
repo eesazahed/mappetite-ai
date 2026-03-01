@@ -18,7 +18,7 @@ export default function Home() {
     >
       <Header scrollContainer={scrollContainer as RefObject<HTMLDivElement>} />
 
-      <div className="grid h-screen grid-cols-[auto_1fr] bg-(--color-brand-700) p-6 font-sans">
+      <div className="grid min-h-screen grid-cols-[auto_1fr] bg-(--color-brand-700) p-6 font-sans">
         <Fields onSubmitLocations={setLocations} />
         <Map locations={locations} />
         <Footer />

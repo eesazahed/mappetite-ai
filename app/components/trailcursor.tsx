@@ -94,14 +94,11 @@ const TextCursor: React.FC<TextCursorProps> = ({
   };
 
   useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-
-    container.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mousemove', handleMouseMove);
     return () => {
-      container.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mousemove', handleMouseMove);
     };
-  }, [containerRef.current]);
+  }, []); // removed containerRef dependency since we use window now
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -113,7 +110,7 @@ const TextCursor: React.FC<TextCursorProps> = ({
   }, [removalInterval]);
 
   return (
-    <div ref={containerRef} className="w-full h-full relative">
+    <div ref={containerRef} className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
       <div className="absolute inset-0 pointer-events-none">
         <AnimatePresence>
           {trail.map(item => (
