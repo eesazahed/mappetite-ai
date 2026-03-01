@@ -63,7 +63,7 @@ export default function Header({ scrollContainer }: HeaderProps) {
       <div className="absolute top-0 left-0 flex h-full w-full flex-col items-center justify-center">
         <div
           className={`flex flex-col items-center justify-center transition-transform duration-700 ${
-            animationDone ? "-translate-y-16" : "translate-y-0"
+            animationDone ? "-translate-y-8" : "translate-y-0"
           }`}
         >
           <div className="relative">
@@ -102,7 +102,7 @@ export default function Header({ scrollContainer }: HeaderProps) {
           </div>
         </div>
 
-        <div className="mt-12 flex gap-8">
+        <div className="flex gap-8">
           {images.map((src, i) => (
             <div
               key={i}
@@ -126,7 +126,7 @@ export default function Header({ scrollContainer }: HeaderProps) {
 
       <div className="absolute bottom-6 left-1/2 -translate-x-1/2">
         <FaArrowDown
-          size="2rem"
+          size="3.5rem"
           className={`animate-bounce text-gray-300 transition-opacity duration-300 ${
             arrowVisible ? "opacity-100" : "opacity-0"
           }`}
