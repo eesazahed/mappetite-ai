@@ -10,7 +10,6 @@ export default function Home() {
 
       <div className="grid grid-cols-[auto_1fr] bg-(--color-brand-700) font-sans h-screen p-6">
         <Fields />
-        <FoodInfo />
         <Map />
       </div>
     </div>
