@@ -5,9 +5,13 @@ import { RiArrowDropDownLine } from "react-icons/ri";
 
 type FieldsProps = {
   onSubmitLocations: (locations: any[]) => void;
+  onSetHotelCoords: (coords: { lat: number; lng: number } | null) => void;
 };
 
-export default function Fields({ onSubmitLocations }: FieldsProps) {
+export default function Fields({
+  onSubmitLocations,
+  onSetHotelCoords,
+}: FieldsProps) {
   const [form, setForm] = useState({
     city: "",
     hotel: "",
@@ -53,11 +57,12 @@ export default function Fields({ onSubmitLocations }: FieldsProps) {
 
       if (res.ok) {
         console.log("Success:", result);
-        // send locations to parent
-        onSubmitLocations(result.days.flatMap((day: any) => day.meals));
-      } else {
-        console.error("Error:", result.error);
-        alert(result.error);
+        onSetHotelCoords({
+          lat: result.hotel.lat,
+          lng: result.hotel.lng,
+        });
+        const allMeals = result.days.flatMap((day: any) => day.meals);
+        onSubmitLocations(allMeals);
       }
     } catch (err) {
       console.error("Network error:", err);
@@ -94,7 +99,7 @@ export default function Fields({ onSubmitLocations }: FieldsProps) {
             name="hotel"
             value={form.hotel}
             onChange={handleChange}
-            placeholder="Hotel name or address"
+            placeholder="Hotel name-- include address!"
             className={inputClass}
           />
         </div>
