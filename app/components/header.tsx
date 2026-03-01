@@ -16,6 +16,7 @@ export default function Header({ scrollContainer }: HeaderProps) {
   const [cursorFade, setCursorFade] = useState(false);
   const [animationDone, setAnimationDone] = useState(false);
   const [visibleImages, setVisibleImages] = useState<number[]>([]);
+  const [showLogo, setShowLogo] = useState(false);
   const [arrowVisible, setArrowVisible] = useState(true);
 
   useEffect(() => {
@@ -31,13 +32,16 @@ export default function Header({ scrollContainer }: HeaderProps) {
           setTimeout(() => setCursorFade(true), 50);
           setTimeout(() => {
             setShowCursor(false);
+            setShowLogo(true);
+          }, 1050);
+          setTimeout(() => {
             setAnimationDone(true);
             images.forEach((_, i) => {
               setTimeout(() => {
                 setVisibleImages((prev) => [...prev, i]);
               }, i * 300);
             });
-          }, 1050);
+          }, 1850);
         }
       }, 55);
     }, startDelay);
@@ -64,20 +68,37 @@ export default function Header({ scrollContainer }: HeaderProps) {
           className={`flex flex-col items-center justify-center transition-transform duration-700 ${animationDone ? "-translate-y-16" : "translate-y-0"
             }`}
         >
-          <h1 className="text-center text-8xl leading-[1.2] text-gray-300">
-            <span
-              className="inline-flex items-center"
-              style={{ minHeight: "1.2em" }}
-            >
-              <span>{displayed}</span>
-              {showCursor && (
-                <span
-                  className={`animate-fade ml-1 h-[1em] w-0.75 bg-gray-300 transition-opacity duration-500 ${cursorFade ? "opacity-0" : "opacity-100"
-                    }`}
-                ></span>
-              )}
-            </span>
-          </h1>
+          <div className="relative">
+            <Image
+              src="/map-logo.svg"
+              alt="Mappetite Logo"
+              width={110}
+              height={110}
+              className={`logo-entrance ${showLogo ? "logo-visible" : ""}`}
+              style={{
+                filter: "none",
+                position: "absolute",
+                left: "50%",
+                top: "50%",
+                transform: "translate(-50%, -160%) scale(0)",
+                zIndex: 0,
+              }}
+            />
+            <h1 className="relative z-10 text-center text-8xl leading-[1.2] text-gray-300">
+              <span
+                className="inline-flex items-center"
+                style={{ minHeight: "1.2em" }}
+              >
+                <span>{displayed}</span>
+                {showCursor && (
+                  <span
+                    className={`animate-fade ml-1 h-[1em] w-0.75 bg-gray-300 transition-opacity duration-500 ${cursorFade ? "opacity-0" : "opacity-100"
+                      }`}
+                  ></span>
+                )}
+              </span>
+            </h1>
+          </div>
 
           <p className="mt-2 text-center text-2xl text-gray-400">
             your personal ai
@@ -120,6 +141,23 @@ export default function Header({ scrollContainer }: HeaderProps) {
           @keyframes fade {
             0%, 100% { opacity: 0; }
             50% { opacity: 1; }
+          }
+          .logo-entrance {
+            opacity: 0;
+          }
+          .logo-entrance.logo-visible {
+            animation: logoEnter 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards,
+                       logoBounce 2s ease-in-out 0.7s infinite;
+          }
+          @keyframes logoEnter {
+            0% { opacity: 0; transform: translate(-50%, -160%) scale(0); }
+            60% { opacity: 1; transform: translate(-50%, -160%) scale(1.1); }
+            80% { transform: translate(-50%, -160%) scale(0.95); }
+            100% { opacity: 1; transform: translate(-50%, -160%) scale(1); }
+          }
+          @keyframes logoBounce {
+            0%, 100% { transform: translate(-50%, -160%) scale(1); }
+            50% { transform: translate(-50%, calc(-160% - 12px)) scale(1); }
           }
         `}
       </style>
