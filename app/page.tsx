@@ -4,6 +4,7 @@ import { RefObject, useRef, useState } from "react";
 import Header from "./components/header";
 import Map from "./components/map";
 import Fields from "./components/fields";
+import Footer from "./components/footer";
 
 export default function Home() {
   const [locations, setLocations] = useState<any[]>([]);
@@ -20,6 +21,7 @@ export default function Home() {
       <div className="grid h-screen grid-cols-[auto_1fr] bg-(--color-brand-700) p-6 font-sans">
         <Fields onSubmitLocations={setLocations} />
         <Map locations={locations} />
+        <Footer />
       </div>
     </div>
   );

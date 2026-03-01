@@ -3,6 +3,8 @@
 import { useEffect, useState, RefObject } from "react";
 import { FaArrowDown } from "react-icons/fa";
 import Image from "next/image";
+import TextType from './typetext';
+import TextCursor from './trailcursor';
 
 interface HeaderProps {
   scrollContainer: RefObject<HTMLDivElement | null>;
@@ -44,6 +46,7 @@ export default function Header({ scrollContainer }: HeaderProps) {
       }, 55);
     }, startDelay);
 
+
     return () => clearTimeout(startTimeout);
   }, []);
 
@@ -60,11 +63,19 @@ export default function Header({ scrollContainer }: HeaderProps) {
 
   return (
     <div className="relative h-lvh w-full bg-linear-to-b from-(--color-brand-900) from-80% to-(--color-brand-700)">
+      <TextCursor
+        text="🍔"
+        spacing={80}
+        followMouseDirection
+        randomFloat
+        exitDuration={0.3}
+        removalInterval={20}
+        maxPoints={10}
+      />
       <div className="absolute top-0 left-0 flex h-full w-full flex-col items-center justify-center">
         <div
-          className={`flex flex-col items-center justify-center transition-transform duration-700 ${
-            animationDone ? "-translate-y-16" : "translate-y-0"
-          }`}
+          className={`flex flex-col items-center justify-center transition-transform duration-700 ${animationDone ? "-translate-y-16" : "translate-y-0"
+            }`}
         >
           <div className="relative">
             <Image
@@ -89,28 +100,37 @@ export default function Header({ scrollContainer }: HeaderProps) {
                 <span>{displayed}</span>
                 {showCursor && (
                   <span
-                    className={`animate-fade ml-1 h-[1em] w-0.75 bg-gray-300 transition-opacity duration-500 ${
-                      cursorFade ? "opacity-0" : "opacity-100"
-                    }`}
+                    className={`animate-fade ml-1 h-[1em] w-0.75 
+                      bg-gray-300 transition-opacity duration-500 
+                      ${cursorFade ? "opacity-0" : "opacity-100"}`}
                   ></span>
                 )}
               </span>
             </h1>
             <p className="mt-2 text-center text-2xl text-gray-400">
-              your personal ai
+              {/* 750ms delay before texttype */}
+              <TextType
+                text={["your personal foodie", "scrumptious restaurants", "search less, eat more"]}
+                typingSpeed={75}
+                initialDelay={1000}
+                pauseDuration={1500}
+                showCursor
+                cursorCharacter="_"
+                deletingSpeed={50}
+                cursorBlinkDuration={0.5}
+              />
             </p>
           </div>
         </div>
 
-        <div className="mt-12 flex gap-8">
+        <div className="flex gap-8">
           {images.map((src, i) => (
             <div
               key={i}
-              className={`relative h-40 w-64 overflow-hidden rounded-2xl transition-all duration-700 ease-out ${
-                visibleImages.includes(i)
-                  ? "translate-y-0 scale-100 opacity-100"
-                  : "translate-y-6 scale-95 opacity-0"
-              }`}
+              className={`relative h-40 w-64 overflow-hidden rounded-2xl transition-all duration-700 ease-out ${visibleImages.includes(i)
+                ? "translate-y-0 scale-100 opacity-100"
+                : "translate-y-6 scale-95 opacity-0"
+                }`}
             >
               <Image
                 src={src}
@@ -127,9 +147,8 @@ export default function Header({ scrollContainer }: HeaderProps) {
       <div className="absolute bottom-6 left-1/2 -translate-x-1/2">
         <FaArrowDown
           size="2rem"
-          className={`animate-bounce text-gray-300 transition-opacity duration-300 ${
-            arrowVisible ? "opacity-100" : "opacity-0"
-          }`}
+          className={`animate-bounce text-gray-300 transition-opacity duration-300 ${arrowVisible ? "opacity-100" : "opacity-0"
+            }`}
         />
       </div>
 
