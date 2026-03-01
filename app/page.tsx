@@ -1,6 +1,5 @@
 import Header from "./components/header";
 import Map from "./components/map";
-import FoodInfo from "./components/foodInfo";
 import Fields from "./components/fields";
 
 export default function Home() {
