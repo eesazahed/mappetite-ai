@@ -10,7 +10,7 @@ interface HeaderProps {
 
 export default function Header({ scrollContainer }: HeaderProps) {
   const text = "Mappetite AI";
-  const images = ["/image1.png", "/image2.png", "/image3.png"];
+  const images = ["/imageOne.webp", "/imageTwo.webp", "/imageThree.webp"];
   const [displayed, setDisplayed] = useState("");
   const [showCursor, setShowCursor] = useState(true);
   const [cursorFade, setCursorFade] = useState(false);
@@ -30,18 +30,16 @@ export default function Header({ scrollContainer }: HeaderProps) {
         if (index === text.length) {
           clearInterval(interval);
           setTimeout(() => setCursorFade(true), 50);
-          setTimeout(() => {
-            setShowCursor(false);
-            setShowLogo(true);
-          }, 1050);
+          setTimeout(() => setShowCursor(false), 1100);
+          setTimeout(() => setShowLogo(true), 1200);
           setTimeout(() => {
             setAnimationDone(true);
             images.forEach((_, i) => {
               setTimeout(() => {
                 setVisibleImages((prev) => [...prev, i]);
-              }, i * 300);
+              }, i * 250);
             });
-          }, 1850);
+          }, 1800);
         }
       }, 55);
     }, startDelay);
@@ -53,8 +51,7 @@ export default function Header({ scrollContainer }: HeaderProps) {
     const container = scrollContainer.current;
     if (!container) return;
     const handleScroll = () => {
-      const threshold = 200;
-      setArrowVisible(container.scrollTop < threshold);
+      setArrowVisible(container.scrollTop < 200);
     };
     container.addEventListener("scroll", handleScroll);
     handleScroll();
@@ -62,7 +59,7 @@ export default function Header({ scrollContainer }: HeaderProps) {
   }, [scrollContainer]);
 
   return (
-    <div className="relative h-lvh w-full bg-(--color-brand-900)">
+    <div className="relative h-lvh w-full bg-linear-to-b from-(--color-brand-900) from-80% to-(--color-brand-700)">
       <div className="absolute top-0 left-0 flex h-full w-full flex-col items-center justify-center">
         <div
           className={`flex flex-col items-center justify-center transition-transform duration-700 ${
@@ -77,7 +74,6 @@ export default function Header({ scrollContainer }: HeaderProps) {
               height={110}
               className={`logo-entrance ${showLogo ? "logo-visible" : ""}`}
               style={{
-                filter: "none",
                 position: "absolute",
                 left: "50%",
                 top: "50%",
@@ -94,35 +90,34 @@ export default function Header({ scrollContainer }: HeaderProps) {
                 {showCursor && (
                   <span
                     className={`animate-fade ml-1 h-[1em] w-0.75 bg-gray-300 transition-opacity duration-500 ${
-                    cursorFade ? "opacity-0" : "opacity-100"
+                      cursorFade ? "opacity-0" : "opacity-100"
                     }`}
                   ></span>
                 )}
               </span>
             </h1>
+            <p className="mt-2 text-center text-2xl text-gray-400">
+              your personal ai
+            </p>
           </div>
-
-          <p className="mt-2 text-center text-2xl text-gray-400">
-            your personal ai
-          </p>
         </div>
 
-        <div className="mt-6 flex space-x-4">
+        <div className="mt-12 flex gap-8">
           {images.map((src, i) => (
             <div
               key={i}
-              className={`overflow-hidden transition-all duration-700 ${
-                visibleImages.includes(i) ? "h-32" : "h-0"
+              className={`relative h-40 w-64 overflow-hidden rounded-2xl transition-all duration-700 ease-out ${
+                visibleImages.includes(i)
+                  ? "translate-y-0 scale-100 opacity-100"
+                  : "translate-y-6 scale-95 opacity-0"
               }`}
             >
               <Image
                 src={src}
                 alt={`Image ${i}`}
-                width={1}
-                height={1}
-                className={`h-32 w-32 rounded-lg object-cover transition-opacity duration-700 ${
-                  visibleImages.includes(i) ? "opacity-100" : "opacity-0"
-                }`}
+                fill
+                sizes="256px"
+                className="object-cover"
               />
             </div>
           ))}
