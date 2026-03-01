@@ -45,6 +45,7 @@ export default function Header({ scrollContainer }: HeaderProps) {
       }, 55);
     }, startDelay);
 
+
     return () => clearTimeout(startTimeout);
   }, []);
 
@@ -97,17 +98,15 @@ export default function Header({ scrollContainer }: HeaderProps) {
               </span>
             </h1>
             <p className="mt-2 text-center text-2xl text-gray-400">
+              {/* 750ms delay before texttype */}
               <TextType
                 text={["your personal foodie", "scrumptious restaurants", "search less, eat more"]}
                 typingSpeed={75}
+                initialDelay={1000}
                 pauseDuration={1500}
                 showCursor
                 cursorCharacter="_"
-                // texts={["your personal ai", "hi"]}
                 deletingSpeed={50}
-                // variableSpeedEnabled={false}
-                // variableSpeedMin={60}
-                // variableSpeedMax={120}
                 cursorBlinkDuration={0.5}
               />
             </p>
