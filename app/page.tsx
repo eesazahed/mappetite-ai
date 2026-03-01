@@ -5,12 +5,14 @@ import Fields from "./components/fields";
 
 export default function Home() {
   return (
-    <>
+    <div className="h-screen overflow-y-auto overscroll-none overflow-x-hidden">
       <Header />
-      <div className="grid grid-cols-[auto_1fr] min-h-screen bg-gray-400 font-sans dark:bg-gray-400 p-4">
+
+      <div className="grid grid-cols-[auto_1fr] bg-(--color-brand-700) font-sans h-screen p-6">
         <Fields />
+        <FoodInfo />
         <Map />
       </div>
-    </>
+    </div>
   );
 }
