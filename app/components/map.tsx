@@ -360,8 +360,8 @@ export default function MapComponent({ locations, hotelCoords, attractions, dayS
     >
       <GMap
         style={{
-          width: "580px",
-          height: "480px",
+          width: "100%",
+          height: "100%",
           borderRadius: "16px",
           opacity: loading ? 0.3 : 1,
           transition: "opacity 0.3s ease",
