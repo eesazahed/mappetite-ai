@@ -5,8 +5,6 @@ Create a 1-day, 1-meal plan in {{city}} with the following constraints:
 - Transportation: {{transportation}}
 - Budget per day: ${{budgetPerDay}}
 - Cuisine: {{cuisines}}
-- Dietary restrictions: {{dietaryRestrictions}}
-- Max walking time: {{maxWalkingTimeMinutes}}
 
 Return JSON only with this structure:
 
