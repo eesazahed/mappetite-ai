@@ -4,77 +4,133 @@ import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 
 export default function Fields() {
-    const [form, setForm] = useState({
-        city: "",
-        hotel: "",
-        tripDuration: "",
-        transport: "",
-        maxDistance: "",
-        budget: "",
-        cuisine: "",
-        includeFastFood: false,
-        mealsPerDay: "",
-    });
+  const [form, setForm] = useState({
+    city: "",
+    hotel: "",
+    tripDuration: "",
+    transport: "",
+    maxDistance: "",
+    budget: "",
+    cuisine: "",
+    includeFastFood: false,
+    mealsPerDay: "",
+  });
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        const target = e.target;
-        if (target instanceof HTMLInputElement && target.type === "checkbox") {
-            setForm((prev) => ({ ...prev, [target.name]: target.checked }));
-        } else {
-            setForm((prev) => ({ ...prev, [target.name]: target.value }));
-        }
-    };
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
+    const target = e.target;
+    if (target instanceof HTMLInputElement && target.type === "checkbox") {
+      setForm((prev) => ({ ...prev, [target.name]: target.checked }));
+    } else {
+      setForm((prev) => ({ ...prev, [target.name]: target.value }));
+    }
+  };
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        console.log("Form submitted", form);
-    };
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log("Form submitted", form);
+  };
 
-    const labelClass = "text-xs text-gray-500 uppercase tracking-wider";
-    const inputClass = "w-full border-gray-200 border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none transition-all";
+  const labelClass = "text-xs text-gray-500 uppercase tracking-wider";
+  const inputClass =
+    "w-full border-gray-200 border rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none transition-all";
 
-    return (
-        <div className="w-[48vw] bg-white rounded-2xl shadow-sm border border-gray-100 p-7 h-fit">
-            <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-                <div className="flex flex-col gap-1">
-                    <label className={labelClass} style={{ fontWeight: 600 }}>City</label>
-                    <input type="text" name="city" value={form.city} onChange={handleChange} placeholder="Enter city" className={inputClass} />
-                </div>
-                <div className="flex flex-col gap-1">
-                    <label className={labelClass} style={{ fontWeight: 600 }}>Hotel</label>
-                    <input type="text" name="hotel" value={form.hotel} onChange={handleChange} placeholder="Hotel name or address" className={inputClass} />
-                </div>
-                <div className="flex flex-col gap-1">
-                    <label className={labelClass} style={{ fontWeight: 600 }}>Trip Duration</label>
-                    <input type="number" name="tripDuration" value={form.tripDuration} onChange={handleChange} placeholder="Number of days" min={1} className={inputClass} />
-                </div>
-                <div className="flex flex-col gap-1">
-                    <label className={labelClass} style={{ fontWeight: 600 }}>Mode of Transport</label>
-                    <div className="relative">
-                        <select
-                            name="transport"
-                            value={form.transport}
-                            onChange={handleChange}
-                            className={`${inputClass} appearance-none pr-10`}
-                            style={{ color: form.transport ? undefined : "#c4c4c4" }}
-                        >
-                            <option value="" disabled hidden>Walk, car, public transit</option>
-                            <option value="walk">Walk</option>
-                            <option value="car">Car</option>
-                            <option value="public_transit">Public transit</option>
-                            <option value="bike">Bike</option>
-                        </select>
-                        <ChevronDown size={15} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" />
-                    </div>
-                </div>
-                <div className="flex flex-col gap-1">
-                    <label className={labelClass} style={{ fontWeight: 600 }}>Maximum Travel Distance</label>
-                    <input type="text" name="maxDistance" value={form.maxDistance} onChange={handleChange} placeholder="Miles or km" className={inputClass} />
-                </div>
-                <div className="flex flex-col gap-1">
-                    <label className={labelClass} style={{ fontWeight: 600 }}>Budget per Day</label>
-                    <input type="text" name="budget" value={form.budget} onChange={handleChange} placeholder="Amount and currency" className={inputClass} />
-                </div>
+  return (
+    <div className="h-fit w-[48vw] rounded-2xl border border-gray-100 bg-white p-7 shadow-sm">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+        <div className="flex flex-col gap-1">
+          <label className={labelClass} style={{ fontWeight: 600 }}>
+            City
+          </label>
+          <input
+            type="text"
+            name="city"
+            value={form.city}
+            onChange={handleChange}
+            placeholder="Enter city"
+            className={inputClass}
+          />
+        </div>
+        <div className="flex flex-col gap-1">
+          <label className={labelClass} style={{ fontWeight: 600 }}>
+            Hotel
+          </label>
+          <input
+            type="text"
+            name="hotel"
+            value={form.hotel}
+            onChange={handleChange}
+            placeholder="Hotel name or address"
+            className={inputClass}
+          />
+        </div>
+        <div className="flex flex-col gap-1">
+          <label className={labelClass} style={{ fontWeight: 600 }}>
+            Trip Duration
+          </label>
+          <input
+            type="number"
+            name="tripDuration"
+            value={form.tripDuration}
+            onChange={handleChange}
+            placeholder="Number of days"
+            min={1}
+            className={inputClass}
+          />
+        </div>
+        <div className="flex flex-col gap-1">
+          <label className={labelClass} style={{ fontWeight: 600 }}>
+            Mode of Transport
+          </label>
+          <div className="relative">
+            <select
+              name="transport"
+              value={form.transport}
+              onChange={handleChange}
+              className={`${inputClass} appearance-none pr-10`}
+              style={{ color: form.transport ? undefined : "#c4c4c4" }}
+            >
+              <option value="" disabled hidden>
+                Walk, car, public transit
+              </option>
+              <option value="walk">Walk</option>
+              <option value="car">Car</option>
+              <option value="public_transit">Public transit</option>
+              <option value="bike">Bike</option>
+            </select>
+            <ChevronDown
+              size={15}
+              className="pointer-events-none absolute top-1/2 right-3.5 -translate-y-1/2 text-gray-500"
+            />
+          </div>
+        </div>
+        <div className="flex flex-col gap-1">
+          <label className={labelClass} style={{ fontWeight: 600 }}>
+            Maximum Travel Distance
+          </label>
+          <input
+            type="text"
+            name="maxDistance"
+            value={form.maxDistance}
+            onChange={handleChange}
+            placeholder="Miles or km"
+            className={inputClass}
+          />
+        </div>
+        <div className="flex flex-col gap-1">
+          <label className={labelClass} style={{ fontWeight: 600 }}>
+            Budget per Day
+          </label>
+          <input
+            type="text"
+            name="budget"
+            value={form.budget}
+            onChange={handleChange}
+            placeholder="Amount and currency"
+            className={inputClass}
+          />
+        </div>
 
                 <div className="flex flex-col gap-1">
                     <label className={labelClass} style={{ fontWeight: 600 }}>Preferred Cuisine</label>
@@ -93,7 +149,7 @@ export default function Fields() {
                             </svg>
                         )}
                     </button>
-                    <span className="text-sm text-gray-700">Include fast food</span>
+                    <span className="text-sm text-gray-600">Include fast food</span>
                 </div>
                 <div className="flex flex-col gap-1">
                     <label className={labelClass} style={{ fontWeight: 600 }}>Meals per Day</label>
