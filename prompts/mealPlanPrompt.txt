@@ -1,0 +1,34 @@
+You are a food planner. 
+Create a 1-day, 1-meal plan in {{city}} with the following constraints:
+
+- Hotel: {{hotel}}
+- Transportation: {{transportation}}
+- Budget per day: ${{budgetPerDay}}
+- Cuisine: {{cuisines}}
+- Dietary restrictions: {{dietaryRestrictions}}
+- Max walking time: {{maxWalkingTimeMinutes}}
+
+Return JSON only with this structure:
+
+{
+  "hotel": { "name": "...", "address": "...", "lat": 0, "lng": 0 },
+  "meals": [
+    {
+      "type": "lunch",
+      "name": "...",
+      "address": "...",
+      "lat": 0,
+      "lng": 0,
+      "opens": "...",
+      "closes": "...",
+      "scheduled_time": "...",
+      "estimated_cost": 0,
+      "travel_time_from_hotel_minutes": 0
+    }
+  ],
+  "total_day_cost": 0,
+  "within_budget": true
+}
+
+No explanations, return only valid JSON.
+Return strictly JSON only. Do not include any Markdown formatting, code blocks, explanations, or extra text.
