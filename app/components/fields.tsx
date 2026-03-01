@@ -3,7 +3,11 @@
 import { useState } from "react";
 import { RiArrowDropDownLine } from "react-icons/ri";
 
-export default function Fields() {
+type FieldsProps = {
+  onSubmitLocations: (locations: any[]) => void;
+};
+
+export default function Fields({ onSubmitLocations }: FieldsProps) {
   const [form, setForm] = useState({
     city: "",
     hotel: "",
@@ -49,6 +53,8 @@ export default function Fields() {
 
       if (res.ok) {
         console.log("Success:", result);
+        // send locations to parent
+        onSubmitLocations(result.days.flatMap((day: any) => day.meals));
       } else {
         console.error("Error:", result.error);
         alert(result.error);

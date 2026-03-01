@@ -1,11 +1,15 @@
 "use client";
 
-import { APIProvider, Map } from "@vis.gl/react-google-maps";
+import { APIProvider, Map, Marker } from "@vis.gl/react-google-maps";
 import { useState, useEffect } from "react";
 
 const apiKey = process.env.NEXT_PUBLIC_GMAPS_API_KEY!;
 
-export default function ExMap() {
+type ExMapProps = {
+  locations: { lat: number; lng: number; name: string }[];
+};
+
+export default function ExMap({ locations }: ExMapProps) {
   const Lat = 42.36;
   const Lng = -71.09;
 
@@ -19,33 +23,25 @@ export default function ExMap() {
   }, []);
 
   return (
-    <div 
-        style={{
-          width: "40vw",
-          height: "600px",
-          opacity: mapVisible ? 1 : 0,
-          transition: "opacity 1s ease",
-          pointerEvents: mapVisible ? "auto" : "none",
-          marginLeft: "40px",
-          filter: "none !important",
-        }}
-        className = "h-fit w-[48vw] rounded-2xl border border-gray-100 bg-white p-7 shadow-sm"
-      >
-        {apiKey && (
-          <APIProvider
-            apiKey={apiKey}
-            onLoad={() => 
-              showMap(true)
-            }
+    <div style={{ width: "48vw", height: "600px" }} className="...">
+      {apiKey && (
+        <APIProvider apiKey={apiKey} onLoad={() => showMap(true)}>
+          <Map
+            style={{ width: "100%", height: "100%" }}
+            defaultCenter={{ lat: 42.36, lng: -71.09 }}
+            defaultZoom={14}
+            gestureHandling="greedy"
           >
-            <Map
-              style={{ width: "100%", height: "100%" }}
-              defaultCenter={{ lat: Lat, lng: Lng }}
-              defaultZoom={18}
-              gestureHandling="greedy"
-            ></Map>
-          </APIProvider>
-        )}
+            {locations.map((loc, idx) => (
+              <Marker
+                key={idx}
+                position={{ lat: loc.lat, lng: loc.lng }}
+                title={loc.name}
+              />
+            ))}
+          </Map>
+        </APIProvider>
+      )}
     </div>
   );
 }
