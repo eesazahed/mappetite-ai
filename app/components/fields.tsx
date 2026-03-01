@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
+import { useMapsLibrary } from "@vis.gl/react-google-maps";
 import { RiArrowDropDownLine } from "react-icons/ri";
 
 type FieldsProps = {
@@ -8,13 +9,18 @@ type FieldsProps = {
   onSetHotelCoords: (coords: { lat: number; lng: number } | null) => void;
 };
 
+type HotelPlace = {
+  lat: number;
+  lng: number;
+  name: string;
+  address: string;
+};
+
 export default function Fields({
   onSubmitLocations,
   onSetHotelCoords,
 }: FieldsProps) {
   const [form, setForm] = useState({
-    city: "",
-    hotel: "",
     tripDuration: "",
     transport: "",
     maxDistance: "",
@@ -23,6 +29,35 @@ export default function Fields({
     includeFastFood: false,
     mealsPerDay: "",
   });
+
+  const [hotelPlace, setHotelPlace] = useState<HotelPlace | null>(null);
+  const hotelInputRef = useRef<HTMLInputElement>(null);
+  const placesLib = useMapsLibrary("places");
+
+  useEffect(() => {
+    if (!placesLib || !hotelInputRef.current) return;
+
+    const autocomplete = new placesLib.Autocomplete(hotelInputRef.current, {
+      types: ["lodging"],
+      fields: ["name", "geometry", "formatted_address"],
+    });
+
+    const listener = autocomplete.addListener("place_changed", () => {
+      const place = autocomplete.getPlace();
+      if (place?.geometry?.location) {
+        setHotelPlace({
+          lat: place.geometry.location.lat(),
+          lng: place.geometry.location.lng(),
+          name: place.name || "",
+          address: place.formatted_address || "",
+        });
+      }
+    });
+
+    return () => {
+      google.maps.event.removeListener(listener);
+    };
+  }, [placesLib]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
@@ -38,13 +73,20 @@ export default function Fields({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (!hotelPlace) {
+      alert("Please select a hotel from the autocomplete suggestions.");
+      return;
+    }
+
     try {
       const res = await fetch("/api/food", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          city: form.city,
-          hotelName: form.hotel,
+          hotelName: hotelPlace.name,
+          hotelAddress: hotelPlace.address,
+          hotelLat: hotelPlace.lat,
+          hotelLng: hotelPlace.lng,
           days: Number(form.tripDuration),
           mealsPerDay: Number(form.mealsPerDay),
           likes: form.cuisine.split(",").map((c) => c.trim()),
@@ -58,11 +100,13 @@ export default function Fields({
       if (res.ok) {
         console.log("Success:", result);
         onSetHotelCoords({
-          lat: result.hotel.lat,
-          lng: result.hotel.lng,
+          lat: hotelPlace.lat,
+          lng: hotelPlace.lng,
         });
         const allMeals = result.days.flatMap((day: any) => day.meals);
         onSubmitLocations(allMeals);
+      } else {
+        alert(result.error || "Something went wrong.");
       }
     } catch (err) {
       console.error("Network error:", err);
@@ -79,28 +123,14 @@ export default function Fields({
       <form onSubmit={handleSubmit} className="flex flex-col gap-3">
         <div className="flex flex-col gap-1">
           <label className={labelClass} style={{ fontWeight: 600 }}>
-            City
-          </label>
-          <input
-            type="text"
-            name="city"
-            value={form.city}
-            onChange={handleChange}
-            placeholder="Enter city"
-            className={inputClass}
-          />
-        </div>
-        <div className="flex flex-col gap-1">
-          <label className={labelClass} style={{ fontWeight: 600 }}>
             Hotel
           </label>
           <input
+            ref={hotelInputRef}
             type="text"
-            name="hotel"
-            value={form.hotel}
-            onChange={handleChange}
-            placeholder="Hotel name-- include address!"
+            placeholder="Search for your hotel..."
             className={inputClass}
+            onChange={() => setHotelPlace(null)}
           />
         </div>
         <div className="flex flex-col gap-1">

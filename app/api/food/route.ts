@@ -2,27 +2,6 @@ import { NextResponse } from "next/server";
 
 const GMAPS_API_KEY = process.env.GMAPS_API_KEY!;
 
-async function geocode(hotelName: string, city: string) {
-  const query = `${hotelName}, ${city}`;
-
-  const res = await fetch(
-    `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
-      query,
-    )}&key=${GMAPS_API_KEY}`,
-  );
-
-  const data = await res.json();
-  const location = data.results?.[0]?.geometry?.location;
-
-  if (!location) throw new Error("Geocoding failed");
-
-  return {
-    lat: location.lat,
-    lng: location.lng,
-    formatted_address: data.results[0].formatted_address,
-  };
-}
-
 async function searchRestaurants(
   lat: number,
   lng: number,
@@ -101,8 +80,10 @@ export async function POST(request: Request) {
     const data = await request.json();
 
     const {
-      city,
       hotelName,
+      hotelAddress,
+      hotelLat,
+      hotelLng,
       days,
       mealsPerDay,
       likes,
@@ -110,15 +91,14 @@ export async function POST(request: Request) {
       maxDistanceKm,
     } = data;
 
-    const hotel = await geocode(hotelName, city);
     const radiusMeters = maxDistanceKm * 1000;
 
     let allRestaurants: any[] = [];
 
     for (const cuisine of likes) {
       const results = await searchRestaurants(
-        hotel.lat,
-        hotel.lng,
+        hotelLat,
+        hotelLng,
         cuisine,
         radiusMeters,
       );
@@ -142,12 +122,11 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
       message: "Meal plan generated successfully",
-      city,
       hotel: {
         name: hotelName,
-        address: hotel.formatted_address,
-        lat: hotel.lat,
-        lng: hotel.lng,
+        address: hotelAddress,
+        lat: hotelLat,
+        lng: hotelLng,
       },
       days: schedule,
       total_days: days,
