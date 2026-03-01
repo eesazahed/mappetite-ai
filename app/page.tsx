@@ -39,12 +39,15 @@ export default function Home() {
         <APIProvider apiKey={apiKey}>
           <div className="flex min-h-screen flex-col font-sans md:grid md:grid-rows-[1fr_auto]">
             <div className="relative flex flex-1 items-center justify-center overflow-hidden p-6">
-              <div className="flex h-full w-full items-center justify-center transition-all duration-700 ease-in-out">
+              <div className="flex flex-1 flex-row items-center justify-center p-6">
                 <div
-                  className={`flex-shrink-0 transition-transform duration-700 ease-in-out ${
-                    isReady ? "-translate-x-1/2" : "translate-x-0"
-                  }`}
-                  style={{ zIndex: 10 }}
+                  className={`flex-shrink-0 transition-transform duration-700 ease-in-out`}
+                  style={{
+                    transform: isReady
+                      ? "translateX(-20px)"
+                      : "translateX(0px)",
+                    zIndex: 10,
+                  }}
                 >
                   <Fields
                     onSubmitLocations={setLocations}
@@ -53,9 +56,11 @@ export default function Home() {
                 </div>
 
                 <div
-                  className={`absolute top-0 left-0 h-full w-full transition-transform duration-700 ease-in-out ${
-                    isReady ? "translate-x-0" : "translate-x-full"
-                  }`}
+                  className="ml-6 flex-grow transition-opacity duration-700 ease-in-out"
+                  style={{
+                    opacity: isReady ? 1 : 0,
+                    pointerEvents: isReady ? "auto" : "none",
+                  }}
                 >
                   <Map locations={locations} hotelCoords={hotelCoords} />
                 </div>

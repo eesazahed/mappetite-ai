@@ -30,20 +30,76 @@ const darkMapStyles = [
   { elementType: "geometry", stylers: [{ color: "#122018" }] },
   { elementType: "labels.text.stroke", stylers: [{ color: "#0d1a11" }] },
   { elementType: "labels.text.fill", stylers: [{ color: "#7aab8a" }] },
-  { featureType: "administrative.locality", elementType: "labels.text.fill", stylers: [{ color: "#9ec4ae" }] },
-  { featureType: "poi", elementType: "labels.text.fill", stylers: [{ color: "#5f8f72" }] },
-  { featureType: "poi.park", elementType: "geometry", stylers: [{ color: "#1a2f22" }] },
-  { featureType: "poi.park", elementType: "labels.text.fill", stylers: [{ color: "#4f8a64" }] },
-  { featureType: "road", elementType: "geometry", stylers: [{ color: "#1e3829" }] },
-  { featureType: "road", elementType: "geometry.stroke", stylers: [{ color: "#172e20" }] },
-  { featureType: "road", elementType: "labels.text.fill", stylers: [{ color: "#89b89a" }] },
-  { featureType: "road.highway", elementType: "geometry", stylers: [{ color: "#264d38" }] },
-  { featureType: "road.highway", elementType: "geometry.stroke", stylers: [{ color: "#1c3a2b" }] },
-  { featureType: "road.highway", elementType: "labels.text.fill", stylers: [{ color: "#7aab8a" }] },
-  { featureType: "transit", elementType: "geometry", stylers: [{ color: "#1a3024" }] },
-  { featureType: "transit.station", elementType: "labels.text.fill", stylers: [{ color: "#6a9e7e" }] },
-  { featureType: "water", elementType: "geometry", stylers: [{ color: "#0c1f18" }] },
-  { featureType: "water", elementType: "labels.text.fill", stylers: [{ color: "#3d7558" }] },
+  {
+    featureType: "administrative.locality",
+    elementType: "labels.text.fill",
+    stylers: [{ color: "#9ec4ae" }],
+  },
+  {
+    featureType: "poi",
+    elementType: "labels.text.fill",
+    stylers: [{ color: "#5f8f72" }],
+  },
+  {
+    featureType: "poi.park",
+    elementType: "geometry",
+    stylers: [{ color: "#1a2f22" }],
+  },
+  {
+    featureType: "poi.park",
+    elementType: "labels.text.fill",
+    stylers: [{ color: "#4f8a64" }],
+  },
+  {
+    featureType: "road",
+    elementType: "geometry",
+    stylers: [{ color: "#1e3829" }],
+  },
+  {
+    featureType: "road",
+    elementType: "geometry.stroke",
+    stylers: [{ color: "#172e20" }],
+  },
+  {
+    featureType: "road",
+    elementType: "labels.text.fill",
+    stylers: [{ color: "#89b89a" }],
+  },
+  {
+    featureType: "road.highway",
+    elementType: "geometry",
+    stylers: [{ color: "#264d38" }],
+  },
+  {
+    featureType: "road.highway",
+    elementType: "geometry.stroke",
+    stylers: [{ color: "#1c3a2b" }],
+  },
+  {
+    featureType: "road.highway",
+    elementType: "labels.text.fill",
+    stylers: [{ color: "#7aab8a" }],
+  },
+  {
+    featureType: "transit",
+    elementType: "geometry",
+    stylers: [{ color: "#1a3024" }],
+  },
+  {
+    featureType: "transit.station",
+    elementType: "labels.text.fill",
+    stylers: [{ color: "#6a9e7e" }],
+  },
+  {
+    featureType: "water",
+    elementType: "geometry",
+    stylers: [{ color: "#0c1f18" }],
+  },
+  {
+    featureType: "water",
+    elementType: "labels.text.fill",
+    stylers: [{ color: "#3d7558" }],
+  },
 ];
 
 export default function MapComponent({ locations, hotelCoords }: MapProps) {
@@ -57,7 +113,7 @@ export default function MapComponent({ locations, hotelCoords }: MapProps) {
 
   return (
     <div
-      className="h-fit overflow-hidden rounded-2xl shadow-[0_8px_40px_rgba(0,0,0,0.5)]"
+      className="h-full w-full overflow-hidden rounded-2xl shadow-[0_8px_40px_rgba(0,0,0,0.5)]"
       style={{
         background: "rgba(255,255,255,0.045)",
         backdropFilter: "blur(24px)",
@@ -66,7 +122,11 @@ export default function MapComponent({ locations, hotelCoords }: MapProps) {
       }}
     >
       <GMap
-        style={{ width: "600px", height: "500px", borderRadius: "16px" }}
+        style={{
+          width: "100%",
+          height: "100%",
+          borderRadius: "16px",
+        }}
         center={center}
         zoom={14}
         gestureHandling="greedy"

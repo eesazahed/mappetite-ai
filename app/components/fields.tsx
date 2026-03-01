@@ -16,7 +16,10 @@ type HotelPlace = {
   address: string;
 };
 
-export default function Fields({ onSubmitLocations, onSetHotelCoords }: FieldsProps) {
+export default function Fields({
+  onSubmitLocations,
+  onSetHotelCoords,
+}: FieldsProps) {
   const [form, setForm] = useState({
     tripDuration: 1,
     transport: "walk",
@@ -55,7 +58,9 @@ export default function Fields({ onSubmitLocations, onSetHotelCoords }: FieldsPr
     };
   }, [placesLib]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
     const target = e.target;
     if (target instanceof HTMLInputElement && target.type === "checkbox") {
       setForm((prev) => ({ ...prev, [target.name]: target.checked }));
@@ -139,7 +144,10 @@ export default function Fields({ onSubmitLocations, onSetHotelCoords }: FieldsPr
           />
         </div>
 
-        <div className="my-0.5 h-px w-full" style={{ background: "rgba(255,255,255,0.06)" }} />
+        <div
+          className="my-0.5 h-px w-full"
+          style={{ background: "rgba(255,255,255,0.06)" }}
+        />
 
         <div className="grid grid-cols-2 gap-3">
           <div className="flex flex-col gap-1.5">
@@ -234,7 +242,10 @@ export default function Fields({ onSubmitLocations, onSetHotelCoords }: FieldsPr
         </div>
 
         <div className="mt-auto flex flex-col gap-3 pt-2">
-          <div className="h-px w-full" style={{ background: "rgba(255,255,255,0.06)" }} />
+          <div
+            className="h-px w-full"
+            style={{ background: "rgba(255,255,255,0.06)" }}
+          />
           <button
             type="submit"
             className="w-full rounded-lg py-3 text-sm font-semibold tracking-widest text-white uppercase transition-all active:scale-[0.98]"

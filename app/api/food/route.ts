@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-const GMAPS_API_KEY = process.env.GMAPS_API_KEY!;
+const GMAPS_API_KEY = process.env.NEXT_PUBLIC_GMAPS_API_KEY!;
 
 async function searchRestaurants(
   lat: number,
