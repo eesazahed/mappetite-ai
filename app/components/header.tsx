@@ -4,6 +4,7 @@ import { useEffect, useState, RefObject } from "react";
 import { FaArrowDown } from "react-icons/fa";
 import Image from "next/image";
 import TextType from './typetext';
+import TextCursor from './trailcursor';
 
 interface HeaderProps {
   scrollContainer: RefObject<HTMLDivElement | null>;
@@ -62,6 +63,15 @@ export default function Header({ scrollContainer }: HeaderProps) {
 
   return (
     <div className="relative h-lvh w-full bg-linear-to-b from-(--color-brand-900) from-80% to-(--color-brand-700)">
+      <TextCursor
+        text="🍔"
+        spacing={80}
+        followMouseDirection
+        randomFloat
+        exitDuration={0.3}
+        removalInterval={20}
+        maxPoints={10}
+      />
       <div className="absolute top-0 left-0 flex h-full w-full flex-col items-center justify-center">
         <div
           className={`flex flex-col items-center justify-center transition-transform duration-700 ${animationDone ? "-translate-y-16" : "translate-y-0"
