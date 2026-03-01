@@ -27,12 +27,15 @@ export default function Home() {
     >
       <Header scrollContainer={scrollContainer as RefObject<HTMLDivElement>} />
 
-      <div className="grid h-screen grid-cols-[auto_1fr] bg-(--color-brand-700) p-6 font-sans">
-        <Fields
-          onSubmitLocations={setLocations}
-          onSetHotelCoords={setHotelCoords}
-        />
-        <Map locations={locations} hotelCoords={hotelCoords} /> <Footer />
+      <div className="grid h-screen grid-rows-[1fr_auto] bg-(--color-brand-700) font-sans">
+        <div className="flex flex-col overflow-hidden p-6 md:flex-row">
+          <Fields
+            onSubmitLocations={setLocations}
+            onSetHotelCoords={setHotelCoords}
+          />
+          <Map locations={locations} hotelCoords={hotelCoords} />
+        </div>
+        <Footer />
       </div>
     </div>
   );
