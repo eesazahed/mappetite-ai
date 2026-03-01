@@ -1,15 +1,18 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { Fragment, useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { Map as GMap, Marker, useMap } from "@vis.gl/react-google-maps";
 
 type Location = {
   lat: number;
   lng: number;
   name: string;
+  address?: string;
+  rating?: number | null;
+  price_level?: number | null;
+  type?: string;
   cuisine?: string;
-  openHours?: string;
-  googleMapsUrl?: string;
   day?: number;
 };
 
@@ -24,6 +27,177 @@ function PanTo({ center }: { center: { lat: number; lng: number } }) {
     if (map) map.panTo(center);
   }, [center, map]);
   return null;
+}
+
+function InfoBox({ loc }: { loc: Location }) {
+  const map = useMap();
+  const [container, setContainer] = useState<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!map) return;
+
+    const div = document.createElement("div");
+    div.style.position = "absolute";
+    div.style.pointerEvents = "none";
+
+    const overlay = new google.maps.OverlayView();
+
+    overlay.onAdd = function () {
+      this.getPanes()!.floatPane.appendChild(div);
+      setContainer(div);
+    };
+
+    overlay.draw = function () {
+      const point = this.getProjection()?.fromLatLngToDivPixel(
+        new google.maps.LatLng(loc.lat, loc.lng)
+      );
+      if (point) {
+        div.style.left = `${point.x}px`;
+        div.style.top = `${point.y}px`;
+      }
+    };
+
+    overlay.onRemove = function () {
+      div.parentNode?.removeChild(div);
+      setContainer(null);
+    };
+
+    overlay.setMap(map);
+    return () => overlay.setMap(null);
+  }, [map, loc.lat, loc.lng]);
+
+  if (!container) return null;
+
+  const stars = loc.rating != null ? `★ ${loc.rating.toFixed(1)}` : null;
+  const price = loc.price_level != null ? "$".repeat(loc.price_level) : null;
+
+  return createPortal(
+    <div
+      style={{
+        transform: "translate(-50%, calc(-100% - 14px))",
+        background: "rgba(8, 20, 12, 0.93)",
+        border: "1px solid rgba(90, 188, 185, 0.25)",
+        borderRadius: "7px",
+        padding: "5px 8px 4px",
+        minWidth: "120px",
+        maxWidth: "170px",
+        backdropFilter: "blur(16px)",
+        boxShadow: "0 4px 18px rgba(0,0,0,0.7)",
+        lineHeight: 1,
+      }}
+    >
+      {/* name */}
+      <div
+        style={{
+          fontSize: "11px",
+          fontWeight: 700,
+          color: "#e0f2e9",
+          marginBottom: "3px",
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          maxWidth: "154px",
+        }}
+      >
+        {loc.name}
+      </div>
+
+      {/* rating + price row */}
+      {(stars || price) && (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "5px",
+            marginBottom: "3px",
+          }}
+        >
+          {stars && (
+            <span style={{ fontSize: "10px", color: "#5abcb9", fontWeight: 600 }}>
+              {stars}
+            </span>
+          )}
+          {price && (
+            <span
+              style={{
+                fontSize: "9px",
+                color: "rgba(255,255,255,0.35)",
+                letterSpacing: "0.04em",
+              }}
+            >
+              {price}
+            </span>
+          )}
+        </div>
+      )}
+
+      {/* address / description */}
+      {loc.address && (
+        <div
+          style={{
+            fontSize: "9px",
+            color: "rgba(255,255,255,0.4)",
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            maxWidth: "154px",
+            marginBottom: loc.type ? "3px" : 0,
+          }}
+        >
+          {loc.address}
+        </div>
+      )}
+
+      {/* meal type badge */}
+      {loc.type && (
+        <div
+          style={{
+            display: "inline-block",
+            fontSize: "8px",
+            fontWeight: 600,
+            color: "#3d9e6a",
+            textTransform: "uppercase",
+            letterSpacing: "0.1em",
+            background: "rgba(57,158,90,0.12)",
+            border: "1px solid rgba(57,158,90,0.25)",
+            borderRadius: "3px",
+            padding: "1px 5px",
+          }}
+        >
+          {loc.type}
+        </div>
+      )}
+
+      {/* pointer triangle */}
+      <div
+        style={{
+          position: "absolute",
+          bottom: "-6px",
+          left: "50%",
+          transform: "translateX(-50%)",
+          width: 0,
+          height: 0,
+          borderLeft: "6px solid transparent",
+          borderRight: "6px solid transparent",
+          borderTop: "6px solid rgba(90, 188, 185, 0.25)",
+        }}
+      />
+      <div
+        style={{
+          position: "absolute",
+          bottom: "-5px",
+          left: "50%",
+          transform: "translateX(-50%)",
+          width: 0,
+          height: 0,
+          borderLeft: "5px solid transparent",
+          borderRight: "5px solid transparent",
+          borderTop: "5px solid rgba(8, 20, 12, 0.93)",
+        }}
+      />
+    </div>,
+    container
+  );
 }
 
 const darkMapStyles = [
@@ -137,7 +311,10 @@ export default function MapComponent({ locations, hotelCoords }: MapProps) {
       >
         <PanTo center={center} />
         {locations.map((loc, idx) => (
-          <Marker key={idx} position={{ lat: loc.lat, lng: loc.lng }} />
+          <Fragment key={idx}>
+            <Marker position={{ lat: loc.lat, lng: loc.lng }} />
+            <InfoBox loc={loc} />
+          </Fragment>
         ))}
       </GMap>
     </div>
